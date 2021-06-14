@@ -8,6 +8,8 @@
 
 **Type**: PERSON_NAME
 
+**PII**: Yes
+
 **HL7 Field**: PID-5-1
 
 **Cardinality**: [1..1]
@@ -21,6 +23,8 @@ The patient's last name
 **Name**: Patient_first_name
 
 **Type**: PERSON_NAME
+
+**PII**: Yes
 
 **HL7 Field**: PID-5-2
 
@@ -36,6 +40,8 @@ The patient's first name
 
 **Type**: PERSON_NAME
 
+**PII**: Yes
+
 **HL7 Field**: PID-5-3
 
 **Cardinality**: [0..1]
@@ -45,6 +51,8 @@ The patient's first name
 **Name**: Patient_suffix
 
 **Type**: PERSON_NAME
+
+**PII**: Yes
 
 **HL7 Field**: PID-5-4
 
@@ -56,6 +64,8 @@ The patient's first name
 
 **Type**: TEXT
 
+**PII**: Yes
+
 **HL7 Field**: PID-3-1
 
 **Cardinality**: [0..1]
@@ -65,6 +75,8 @@ The patient's first name
 **Name**: patient_id_type
 
 **Type**: TEXT
+
+**PII**: No
 
 **HL7 Field**: PID-3-5
 
@@ -76,11 +88,13 @@ The patient's first name
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBX-3-1
 
 **Cardinality**: [0..1]
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Test Performed LOINC Code
 
@@ -93,6 +107,8 @@ The LOINC code of the test performed. This is a standardized coded value describ
 **Name**: Specimen_source_site_code
 
 **Type**: CODE
+
+**PII**: No
 
 **Format**: $code
 
@@ -107,12 +123,15 @@ Code | Display
 119297000|Blood specimen (specimen)
 71836000|Nasopharyngeal structure (body structure)
 45206002|Nasal structure (body structure)
+53342003|Internal nose structure (body structure)
 
 ---
 
 **Name**: Specimen_type_code
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: SPM-4
 
@@ -148,13 +167,15 @@ The specimen source, such as Blood or Serum
 
 **Type**: TABLE
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Model
 
@@ -164,6 +185,8 @@ The specimen source, such as Blood or Serum
 
 **Type**: ID
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -171,6 +194,8 @@ The specimen source, such as Blood or Serum
 **Name**: Result_ID
 
 **Type**: ID
+
+**PII**: No
 
 **HL7 Field**: MSH-10
 
@@ -186,6 +211,8 @@ unique id to track the usage of the message
 
 **Type**: ID
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 **Documentation**:
@@ -198,6 +225,8 @@ pointer/link to the unique id of a previously submitted result.  Usually blank. 
 
 **Type**: ID
 
+**PII**: No
+
 **HL7 Fields**: ORC-2-1, OBR-2-1
 
 **Cardinality**: [0..1]
@@ -207,6 +236,8 @@ pointer/link to the unique id of a previously submitted result.  Usually blank. 
 **Name**: filler_order_id
 
 **Type**: ID
+
+**PII**: No
 
 **HL7 Fields**: ORC-3-1, SPM-2-2, OBR-3-1
 
@@ -221,6 +252,8 @@ Accension number
 **Name**: Test_result_status
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Fields**: OBX-11-1, OBR-25-1
 
@@ -250,6 +283,8 @@ Z|No record of this patient
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: OBX-5
 
 **Cardinality**: [0..1]
@@ -269,13 +304,14 @@ Code | Display
 419984006|Inconclusive
 125154007|Specimen unsatisfactory for evaluation
 455371000124106|Invalid result
-840539006|Disease caused by sever acute respitory syndrome coronavirus 2 (disorder)
+840539006|Disease caused by sever acute respiratory syndrome coronavirus 2 (disorder)
 840544004|Suspected disease caused by severe acute respiratory coronavirus 2 (situation)
 840546002|Exposure to severe acute respiratory syndrome coronavirus 2 (event)
 840533007|Severe acute respiratory syndrome coronavirus 2 (organism)
 840536004|Antigen of severe acute respiratory syndrome coronavirus 2 (substance)
 840535000|Antibody to severe acute respiratory syndrome coronavirus 2 (substance)
 840534001|Severe acute respiratory syndrome coronavirus 2 vaccination (procedure)
+373121007|Test not done
 
 **Documentation**:
 
@@ -286,6 +322,8 @@ The result of the test performed. For IgG, IgM and CT results that give a numeri
 **Name**: Illness_onset_date
 
 **Type**: DATE
+
+**PII**: No
 
 **HL7 Field**: AOE
 
@@ -298,6 +336,8 @@ The result of the test performed. For IgG, IgM and CT results that give a numeri
 **Name**: Specimen_collection_date_time
 
 **Type**: DATETIME
+
+**PII**: No
 
 **HL7 Fields**: SPM-17-1, OBR-7, OBR-8, OBX-14
 
@@ -314,6 +354,8 @@ The date which the specimen was collected. The default format is yyyyMMddHHmmssz
 
 **Type**: DATE
 
+**PII**: No
+
 **HL7 Field**: ORC-15
 
 **Cardinality**: [0..1]
@@ -323,6 +365,8 @@ The date which the specimen was collected. The default format is yyyyMMddHHmmssz
 **Name**: Test_date
 
 **Type**: DATETIME
+
+**PII**: No
 
 **Format**: yyyyMMdd
 
@@ -336,6 +380,8 @@ The date which the specimen was collected. The default format is yyyyMMddHHmmssz
 
 **Type**: DATETIME
 
+**PII**: No
+
 **Format**: yyyyMMdd
 
 **HL7 Field**: OBR-22
@@ -347,6 +393,8 @@ The date which the specimen was collected. The default format is yyyyMMddHHmmssz
 **Name**: Patient_race
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: PID-10
 
@@ -376,6 +424,8 @@ The patient's race. There is a common valueset defined for race values, but some
 
 **Type**: DATE
 
+**PII**: Yes
+
 **HL7 Field**: PID-7
 
 **Cardinality**: [0..1]
@@ -392,6 +442,8 @@ Other states may choose to define their own formats.
 **Name**: Patient_gender
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: PID-8-1
 
@@ -419,6 +471,8 @@ The patient's gender. There is a valueset defined based on the values in PID-8-1
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: PID-22
 
 **Cardinality**: [0..1]
@@ -443,6 +497,8 @@ consumers are free to define their own values. Please refer to the consumer-spec
 
 **Type**: STREET
 
+**PII**: Yes
+
 **HL7 Field**: PID-11-1
 
 **Cardinality**: [0..1]
@@ -456,6 +512,8 @@ The patient's street address
 **Name**: Patient_street_2
 
 **Type**: STREET_OR_BLANK
+
+**PII**: Yes
 
 **HL7 Field**: PID-11-2
 
@@ -471,6 +529,8 @@ The patient's second address line
 
 **Type**: CITY
 
+**PII**: Yes
+
 **HL7 Field**: PID-11-3
 
 **Cardinality**: [0..1]
@@ -484,6 +544,8 @@ The patient's city
 **Name**: Patient_state
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: PID-11-4
 
@@ -503,6 +565,8 @@ The patient's state
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: PID-11-5
 
 **Cardinality**: [0..1]
@@ -516,6 +580,8 @@ The patient's zip code
 **Name**: Patient_phone_number
 
 **Type**: TELEPHONE
+
+**PII**: Yes
 
 **HL7 Field**: PID-13
 
@@ -531,6 +597,8 @@ The patient's phone number with area code
 
 **Type**: TABLE_OR_BLANK
 
+**PII**: No
+
 **Cardinality**: [1..1]
 
 **Table**: fips-county
@@ -543,6 +611,8 @@ The patient's phone number with area code
 
 **Type**: EMAIL
 
+**PII**: Yes
+
 **HL7 Field**: PID-13-4
 
 **Cardinality**: [0..1]
@@ -553,6 +623,8 @@ The patient's phone number with area code
 
 **Type**: TEXT
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -560,6 +632,8 @@ The patient's phone number with area code
 **Name**: Processing_mode_code
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: MSH-11-1
 
@@ -582,6 +656,8 @@ P, D, or T for Production, Debugging, or Training
 **Name**: Employed_in_healthcare
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: AOE
 
@@ -607,6 +683,8 @@ Is the patient employed in health care?
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: AOE
 
 **LOINC Code**: 95421-4
@@ -630,6 +708,8 @@ Does the patient reside in a congregate care setting?
 **Name**: First_test
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: AOE
 
@@ -655,6 +735,8 @@ Is this the patient's first test for this condition?
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: AOE
 
 **LOINC Code**: 95419-8
@@ -679,7 +761,9 @@ Is the patient symptomatic?
 
 **Type**: TEXT
 
-**HL7 Fields**: ORC-2-2, OBR-2-2, ORC-3-2, OBR-3-2
+**PII**: No
+
+**HL7 Fields**: ORC-2-2, OBR-2-2, ORC-3-2, OBR-3-2, OBX-23-1, PID-3-4-1
 
 **Cardinality**: [0..1]
 
@@ -692,6 +776,8 @@ The name of the laboratory which performed the test, can be the same as the send
 **Name**: Testing_lab_CLIA
 
 **Type**: ID_CLIA
+
+**PII**: No
 
 **HL7 Fields**: OBX-15-1, OBX-23-10, ORC-3-3, OBR-3-3, OBR-2-3, ORC-2-3
 
@@ -710,6 +796,8 @@ An example of the ID is 03D2159846
 
 **Type**: STREET
 
+**PII**: No
+
 **HL7 Field**: OBX-24-1
 
 **Cardinality**: [0..1]
@@ -719,6 +807,8 @@ An example of the ID is 03D2159846
 **Name**: Testing_lab_street_2
 
 **Type**: STREET_OR_BLANK
+
+**PII**: No
 
 **HL7 Field**: OBX-24-2
 
@@ -730,6 +820,8 @@ An example of the ID is 03D2159846
 
 **Type**: CITY
 
+**PII**: No
+
 **HL7 Field**: OBX-24-3
 
 **Cardinality**: [0..1]
@@ -739,6 +831,8 @@ An example of the ID is 03D2159846
 **Name**: Testing_lab_state
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: OBX-24-4
 
@@ -754,6 +848,8 @@ An example of the ID is 03D2159846
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: OBX-24-5
 
 **Cardinality**: [0..1]
@@ -764,6 +860,8 @@ An example of the ID is 03D2159846
 
 **Type**: TELEPHONE
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -771,6 +869,8 @@ An example of the ID is 03D2159846
 **Name**: Testing_lab_county
 
 **Type**: TABLE
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -784,6 +884,8 @@ An example of the ID is 03D2159846
 
 **Type**: TEXT
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 **Documentation**:
@@ -795,6 +897,8 @@ For cases where organization owns many facilities (eg, a large hospital system)
 **Name**: Ordering_facility_name
 
 **Type**: TEXT
+
+**PII**: No
 
 **HL7 Field**: ORC-21-1
 
@@ -810,6 +914,8 @@ The name of the facility which the test was ordered from
 
 **Type**: STREET
 
+**PII**: No
+
 **HL7 Field**: ORC-22-1
 
 **Cardinality**: [0..1]
@@ -823,6 +929,8 @@ The address of the facility which the test was ordered from
 **Name**: Ordering_facility_street_2
 
 **Type**: STREET_OR_BLANK
+
+**PII**: No
 
 **HL7 Field**: ORC-22-2
 
@@ -838,6 +946,8 @@ The secondary address of the facility which the test was ordered from
 
 **Type**: CITY
 
+**PII**: No
+
 **HL7 Field**: ORC-22-3
 
 **Cardinality**: [0..1]
@@ -851,6 +961,8 @@ The city of the facility which the test was ordered from
 **Name**: Ordering_facility_state
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: ORC-22-4
 
@@ -870,6 +982,8 @@ The state of the facility which the test was ordered from
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: ORC-22-5
 
 **Cardinality**: [0..1]
@@ -884,9 +998,11 @@ The zip code of the facility which the test was ordered from
 
 **Type**: TELEPHONE
 
+**PII**: No
+
 **HL7 Field**: ORC-23
 
-**Cardinality**: [1..1]
+**Cardinality**: [0..1]
 
 **Documentation**:
 
@@ -897,6 +1013,8 @@ The phone number of the facility which the test was ordered from
 **Name**: Ordering_facility_county
 
 **Type**: TABLE
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -910,6 +1028,8 @@ The phone number of the facility which the test was ordered from
 
 **Type**: EMAIL
 
+**PII**: No
+
 **HL7 Field**: ORC-23-4
 
 **Cardinality**: [0..1]
@@ -919,6 +1039,8 @@ The phone number of the facility which the test was ordered from
 **Name**: Ordering_provider_ID
 
 **Type**: ID_NPI
+
+**PII**: No
 
 **HL7 Fields**: ORC-12-1, OBR-16-1
 
@@ -934,6 +1056,8 @@ The ordering provider’s National Provider Identifier
 
 **Type**: PERSON_NAME
 
+**PII**: No
+
 **HL7 Fields**: ORC-12-2, OBR-16-2
 
 **Cardinality**: [0..1]
@@ -947,6 +1071,8 @@ The last name of provider who ordered the test
 **Name**: Ordering_provider_first_name
 
 **Type**: PERSON_NAME
+
+**PII**: No
 
 **HL7 Fields**: ORC-12-3, OBR-16-3
 
@@ -962,6 +1088,8 @@ The first name of the provider who ordered the test
 
 **Type**: STREET
 
+**PII**: Yes
+
 **HL7 Field**: ORC-24-1
 
 **Cardinality**: [0..1]
@@ -975,6 +1103,8 @@ The street address of the provider
 **Name**: Ordering_provider_street_2
 
 **Type**: STREET_OR_BLANK
+
+**PII**: Yes
 
 **HL7 Field**: ORC-24-2
 
@@ -990,6 +1120,8 @@ The street second address of the provider
 
 **Type**: CITY
 
+**PII**: Yes
+
 **HL7 Field**: ORC-24-3
 
 **Cardinality**: [0..1]
@@ -1003,6 +1135,8 @@ The city of the provider
 **Name**: Ordering_provider_state
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: ORC-24-4
 
@@ -1022,6 +1156,8 @@ The state of the provider
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: ORC-24-5
 
 **Cardinality**: [0..1]
@@ -1035,6 +1171,8 @@ The zip code of the provider
 **Name**: Ordering_provider_phone_number
 
 **Type**: TELEPHONE
+
+**PII**: Yes
 
 **HL7 Fields**: ORC-14, OBR-17
 
@@ -1050,6 +1188,8 @@ The phone number of the provider
 
 **Type**: TABLE
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 **Table**: fips-county
@@ -1062,7 +1202,9 @@ The phone number of the provider
 
 **Type**: TEXT
 
-**HL7 Field**: MSH-4-1
+**PII**: No
+
+**HL7 Fields**: MSH-4-1, PID-3-4-1
 
 **Cardinality**: [0..1]
 
@@ -1076,6 +1218,8 @@ The reporting facility's name
 
 **Type**: ID_CLIA
 
+**PII**: No
+
 **HL7 Fields**: MSH-4-2, SPM-2-1-3, SPM-2-2-3, PID-3-4-2, PID-3-6-2
 
 **Cardinality**: [0..1]
@@ -1083,5 +1227,71 @@ The reporting facility's name
 **Documentation**:
 
 The reporting facility's CLIA
+
+---
+
+**Name**: test_authorized_for_otc
+
+**Type**: TABLE
+
+**PII**: No
+
+**Cardinality**: [0..1]
+
+
+**Reference URL**:
+[https://www.fda.gov/news-events/fda-newsroom/press-announcements](https://www.fda.gov/news-events/fda-newsroom/press-announcements) 
+
+**Table**: LIVD-Supplemental-2021-06-07
+
+**Table Column**: is_otc
+
+**Documentation**:
+
+Is the test authorized for over-the-counter purchase by the FDA (Y, N, UNK)
+
+---
+
+**Name**: test_authorized_for_home
+
+**Type**: TABLE
+
+**PII**: No
+
+**Cardinality**: [0..1]
+
+
+**Reference URL**:
+[https://www.fda.gov/news-events/fda-newsroom/press-announcements](https://www.fda.gov/news-events/fda-newsroom/press-announcements) 
+
+**Table**: LIVD-Supplemental-2021-06-07
+
+**Table Column**: is_home
+
+**Documentation**:
+
+Is the test authorized for home use by the FDA (Y, N, UNK)
+
+---
+
+**Name**: test_authorized_for_unproctored
+
+**Type**: TABLE
+
+**PII**: No
+
+**Cardinality**: [0..1]
+
+
+**Reference URL**:
+[https://www.fda.gov/news-events/fda-newsroom/press-announcements](https://www.fda.gov/news-events/fda-newsroom/press-announcements) 
+
+**Table**: LIVD-Supplemental-2021-06-07
+
+**Table Column**: is_unproctored
+
+**Documentation**:
+
+Is the test authorized for unproctored administration by the FDA (Y, N, UNK)
 
 ---

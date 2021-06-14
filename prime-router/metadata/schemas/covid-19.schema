@@ -48,19 +48,19 @@ elements:
 
   - name: device_id
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     mapper: obx17()
-    reference: Follows guidence for OBX-17 as defined in the HL7 Confluence page
+    reference: Follows guidance for OBX-17 as defined in the HL7 Confluence page
     referenceUrl: https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification
     hhsGuidanceField: Device ID
-    hl7Field: OBX-17-1
+    hl7OutputFields: [ OBX-17-1, OBX-17-9 ]
     documentation: Device_id is a generated value for the OBX-17 field. It is based on the device model and the LIVD table.
 
   - name: device_id_type
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     mapper: obx17Type()
-    reference: Follows guidence for OBX-17 as defined in the HL7 Confluence page
+    reference: Follows guidance for OBX-17 as defined in the HL7 Confluence page
     referenceUrl: https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification
     hhsGuidanceField: Device ID
     hl7Field: OBX-17-3
@@ -97,42 +97,43 @@ elements:
 
   - name: equipment_model_id
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Equipment UID
-    reference: Follows guidence for OBX-17 as defined in the HL7 Confluence page
+    reference: Follows guidance for OBX-17 as defined in the HL7 Confluence page
     referenceUrl: https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     natFlatFileField: Instrument_model_id
     hhsGuidanceField:
     hl7Field: OBX-18-1
 
   - name: equipment_model_id_type
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Equipment UID Type
-    reference: Follows guidence for OBX-17 as defined in the HL7 Confluence page
+    reference: Follows guidance for OBX-17 as defined in the HL7 Confluence page
     referenceUrl: https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     natFlatFileField:
     hhsGuidanceField:
     hl7Field: OBX-18-3
 
   - name: equipment_model_name
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Model
-    reference: Follows guidence for OBX-17 as defined in the HL7 Confluence page
+    reference: Follows guidance for OBX-17 as defined in the HL7 Confluence page
     referenceUrl: https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification
+    mapper: livdLookup()
     natFlatFileField: Instrument_model_name
     hhsGuidanceField:
 
   - name: equipment_manufacture
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Manufacturer
-    reference: Follows guidence for OBX-17 as defined in the HL7 Confluence page
+    reference: Follows guidance for OBX-17 as defined in the HL7 Confluence page
     referenceUrl: https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     natFlatFileField: Instrument_model_name
     hhsGuidanceField:
 
@@ -220,18 +221,18 @@ elements:
 
   - name: ordered_test_code
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Test Ordered LOINC Code
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     natFlatFileField: Ordered_test_code
     hhsGuidanceField: Test ordered
     hl7Field: OBR-4-1
 
   - name: ordered_test_name
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Test Ordered LOINC Long Name
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     natFlatFileField: Ordered_test_code
     hhsGuidanceField: Test ordered
     hl7Field: OBR-4-2
@@ -247,9 +248,9 @@ elements:
 
   - name: ordered_test_encoding_version
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: LOINC Version ID
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     hl7Field: OBR-4-7
 
   - name: ordering_facility_city
@@ -290,7 +291,7 @@ elements:
 
   - name: ordering_facility_phone_number
     type: TELEPHONE
-    cardinality: ONE
+    cardinality: ZERO_OR_ONE
     natFlatFileField: Ordering_facility_phone_number
     hhsGuidanceField:
     hl7Field: ORC-23
@@ -399,7 +400,7 @@ elements:
     pii: false   # per https://www.hhs.gov/sites/default/files/covid-19-laboratory-data-reporting-guidance.pdf
     natFlatFileField: Ordering_provider_last_name
     hhsGuidanceField:
-    hl7Field:
+    hl7Field: ORC-12-2
     hl7OutputFields: [ORC-12-2, OBR-16-2]
     documentation: The last name of provider who ordered the test
 
@@ -511,6 +512,7 @@ elements:
     type: TEXT
     pii: false
     default: USA
+    hl7Field: PID-11-6
 
   - name: patient_email
     type: EMAIL
@@ -588,7 +590,7 @@ elements:
   # TODO Figure out how to encode patient id (PID-3) like AZ and others want
   - name: patient_id
     type: TEXT
-    pii: false
+    pii: true
     cardinality: ZERO_OR_ONE
     natFlatFileField: Patient_id
     hhsGuidanceField:
@@ -774,7 +776,7 @@ elements:
 
   - name: processing_mode_code
     type: CODE
-    default: D
+    default: P
     cardinality: ZERO_OR_ONE
     valueSet: hl70103
     hl7Field: MSH-11-1
@@ -837,6 +839,7 @@ elements:
     natFlatFileField: Reporting_facility_name
     hhsGuidanceField:
     hl7Field: MSH-4-1
+    hl7OutputFields: [ MSH-4-1, PID-3-4-1 ]
     documentation: The reporting facility's name
 
   - name: reporting_facility_clia
@@ -936,29 +939,59 @@ elements:
     hl7AOEQuestion: 95419-8
     documentation: Is the patient symptomatic?
 
+  - name: test_authorized_for_otc
+    type: TABLE
+    table: LIVD-Supplemental-2021-06-07
+    tableColumn: is_otc
+    reference: Is the test authorized for over-the-counter purchase by the FDA
+    referenceUrl: https://www.fda.gov/news-events/fda-newsroom/press-announcements
+    mapper: livdLookup()
+    default: N
+    documentation: Is the test authorized for over-the-counter purchase by the FDA (Y, N, UNK)
+
+  - name: test_authorized_for_home
+    type: TABLE
+    table: LIVD-Supplemental-2021-06-07
+    tableColumn: is_home
+    reference: Is the test authorized for home use by the FDA
+    referenceUrl: https://www.fda.gov/news-events/fda-newsroom/press-announcements
+    mapper: livdLookup()
+    default: N
+    documentation: Is the test authorized for home use by the FDA (Y, N, UNK)
+
+  - name: test_authorized_for_unproctored
+    type: TABLE
+    table: LIVD-Supplemental-2021-06-07
+    tableColumn: is_unproctored
+    reference: Is the test authorized for unproctored administration by the FDA
+    referenceUrl: https://www.fda.gov/news-events/fda-newsroom/press-announcements
+    mapper: livdLookup()
+    default: N
+    documentation: Is the test authorized for unproctored administration by the FDA (Y, N, UNK)
+
   - name: test_kit_name_id
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Testkit Name ID
-    reference: Follows guidence for OBX-17 as defined in the HL7 Confluence page
+    reference: Follows guidance for OBX-17 as defined in the HL7 Confluence page
     referenceUrl: https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     natFlatFileField: Test_kit_model_name
 
   - name: test_kit_name_id_type
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Testkit Name ID Type
-    reference: Follows guidence for OBX-17 as defined in the HL7 Confluence page
+    reference: Follows guidance for OBX-17 as defined in the HL7 Confluence page
     referenceUrl: https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
 
   - name: test_kit_name_id_cwe_version
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: LOINC Version ID
     reference: Follows guidance for OBX-17-7 where the version of the CWE field is passed along
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     hl7Field: OBX-17-7
 
   - name: test_method_description
@@ -969,9 +1002,9 @@ elements:
 
   - name: test_performed_code
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Test Performed LOINC Code
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     natFlatFileField: Test_performed_code
     hhsGuidanceField:
     hl7Field: OBX-3-1
@@ -979,9 +1012,9 @@ elements:
 
   - name: test_performed_name
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
+    table: LIVD-SARS-CoV-2-2021-04-28
     tableColumn: Test Performed LOINC Long Name
-    mapper: lookup(equipment_model_name)
+    mapper: livdLookup()
     natFlatFileField: Test_performed_code
     hhsGuidanceField:
     hl7Field: OBX-3-2
@@ -998,8 +1031,8 @@ elements:
 
   - name: test_performed_system_version
     type: TABLE
-    table: LIVD-SARS-CoV-2-2021-01-20
-    mapper: lookup(equipment_model_name)
+    table: LIVD-SARS-CoV-2-2021-04-28
+    mapper: livdLookup()
     tableColumn: LOINC Version ID
     hl7Field: OBX-3-7
 
@@ -1114,7 +1147,7 @@ elements:
     natFlatFileField: Testing_lab_name
     hhsGuidanceField:
     hl7Field: OBX-23-1
-    hl7OutputFields: [ ORC-2-2, OBR-2-2, ORC-3-2, OBR-3-2 ]
+    hl7OutputFields: [ ORC-2-2, OBR-2-2, ORC-3-2, OBR-3-2, OBX-23-1, PID-3-4-1 ]
     documentation: The name of the laboratory which performed the test, can be the same as the sending facility name
 
   - name: testing_lab_specimen_id
@@ -1176,4 +1209,8 @@ elements:
     hhsGuidanceField:
     hl7Field: OBX-2
     valueSet: hl70125
+
+  - name: sender_id
+    type: TEXT
+    documentation:  ID name of org that is sending this data to ReportStream.  Suitable for provenance or chain of custody tracking.  Not to be confused with sending_application, in which ReportStream acts as the 'sender' to the downstream jurisdiction.
 

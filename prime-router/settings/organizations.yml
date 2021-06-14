@@ -11,6 +11,51 @@
         topic: covid-19
         schemaName: primedatainput/pdi-covid-19
         format: CSV
+      - name: hl7test
+        organizationName: simple_report
+        topic: covid-19
+        schemaName: hl7/hl7-ingest-covid-19
+        format: HL7
+
+  - name: safehealth
+    description: SAFE - Safe Health Systems
+    jurisdiction: FEDERAL
+    senders:
+      - name: default
+        organizationName: safehealth
+        topic: covid-19
+        schemaName: direct/safehealth-covid-19
+        format: CSV
+
+  - name: cue
+    description: Cue
+    jurisdiction: FEDERAL
+    senders:
+      - name: default
+        organizationName: cue
+        topic: covid-19
+        schemaName: direct/cue-covid-19
+        format: CSV
+
+  - name: inbios
+    description: InBios International, Inc.
+    jurisdiction: FEDERAL
+    senders:
+      - name: default
+        organizationName: inbios
+        topic: covid-19
+        schemaName: direct/inbios-covid-19
+        format: CSV
+
+  - name: imagemover
+    description: ImageMover
+    jurisdiction: FEDERAL
+    senders:
+      - name: default
+        organizationName: imagemover
+        topic: covid-19
+        schemaName: direct/imagemover-covid-19
+        format: CSV
 
   - name: waters
     description: Test Sender from Waters
@@ -18,7 +63,7 @@
     senders:
       - name: default
         organizationName: waters
-        topic: covid-19-otc
+        topic: covid-19
         schemaName: waters/waters-covid-19
         format: CSV
 
@@ -47,41 +92,11 @@
     jurisdiction: STATE
     stateCode: AZ
     receivers:
-      - name: elr-test
-        organizationName: az-phd
-        topic: covid-19
-        jurisdictionalFilter:
-          - matches(ordering_facility_state,AZ)
-          - "doesNotMatch(ordering_facility_name,Tucson Mountains,Tucson Foothills,Sierra Vista Canyons)"
-        timing:
-          operation: MERGE
-          numberPerDay: 1440 # Every minute
-          initialTime: 00:00
-          timeZone: ARIZONA
-        translation:
-          type: CUSTOM
-          schemaName: az/az-covid-19
-          format: CSV
-      - name: elr-hl7-test
-        organizationName: az-phd
-        topic: covid-19
-        jurisdictionalFilter:
-          - matches(ordering_facility_state,AZ)
-          - "doesNotMatch(ordering_facility_name,Tucson Mountains,Tucson Foothills,Sierra Vista Canyons)"
-        translation:
-          type: HL7
-          useBatchHeaders: true
-          receivingApplicationName: AZ.DOH.ELR
-          receivingApplicationOID: 2.16.840.1.114222.4.3.3.2.9.3
-          receivingFacilityName: AZDOH
-          receivingFacilityOID: 2.16.840.1.114222.4.1.142
-          messageProfileId: AZELRIG^ADHS^2.16.840.1.113883.9.31^ISO
       - name: elr-prod
         organizationName: az-phd
         topic: covid-19
         jurisdictionalFilter:
           - matches(ordering_facility_state,AZ)
-          - "matches(ordering_facility_name,Tucson Mountains,Tucson Foothills,Sierra Vista Canyons)"
         timing:
           operation: MERGE
           numberPerDay: 1440 # Every minute
@@ -216,6 +231,7 @@
           - matches(ordering_facility_state, LA)
         translation:
           type: HL7
+          useTestProcessingMode: false
           useBatchHeaders: true
           receivingApplicationName: LA-ELR
           receivingFacilityName: LADOH
@@ -330,12 +346,30 @@
         organizationName: nj-doh
         topic: covid-19
         jurisdictionalFilter:
-          - matches(ordering_facility_state, NJ)
+          - orEquals(ordering_facility_state, NJ, patient_state, NJ)
+          - matches(processing_mode_code, P)
         translation:
           type: HL7
           useBatchHeaders: true
-          receivingApplicationName: NJELR
-          receivingFacilityName: NJ-ELR
+          receivingApplicationName: ELRS
+          receivingApplicationOID: 2.16.840.1.113883.3.1299.5.1.6.1
+          receivingFacilityName: NJDOH
+          receivingFacilityOID: 2.16.840.1.113883.3.1299
+          truncateHDNamespaceIds: true
+      - name: elr-test
+        organizationName: nj-doh
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, NJ, patient_state, NJ)
+          - matches(processing_mode_code, T)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+          receivingApplicationName: ELRS
+          receivingApplicationOID: 2.16.840.1.113883.3.1299.5.1.6.1
+          receivingFacilityName: NJDOH
+          receivingFacilityOID: 2.16.840.1.113883.3.1299
+          truncateHDNamespaceIds: true
 
   - name: mn-doh
     description: Minnesota Department of Health
@@ -405,6 +439,7 @@
           receivingApplicationOID: 2.16.840.1.114222.4.1.185.1
           receivingFacilityName: VDH
           receivingFacilityOID: 2.16.840.1.114222.4.1.185
+          suppressHl7Fields: OBX-18
 
   - name: wi-dph
     description: Wisconsin Department of Public Health
@@ -416,9 +451,37 @@
         topic: covid-19
         jurisdictionalFilter:
           - orEquals(ordering_facility_state, WI, patient_state, WI)
+          - matches(processing_mode_code, P)
         translation:
           type: HL7
           useBatchHeaders: true
+          receivingApplicationName: vCMR
+          receivingApplicationOID: 2.16.840.1.113883.3.33.4.2.2
+          receivingFacilityName: WEDSS
+          receivingFacilityOID: 2.16.840.1.113883.3.33
+        transport:
+          type: SFTP
+          host: sftp
+          port: 22
+          filePath: ./upload
+        timing:
+          operation: MERGE
+          numberPerDay: 1440
+          initialTime: 00:00
+          timeZone: EASTERN
+      - name: elr-test
+        organizationName: wi-dph
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, WI, patient_state, WI)
+          - matches(processing_mode_code, T)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+          receivingApplicationName: vCMR
+          receivingApplicationOID: 2.16.840.1.113883.3.33.4.2.2
+          receivingFacilityName: WEDSS
+          receivingFacilityOID: 2.16.840.1.113883.3.33
         transport:
           type: SFTP
           host: sftp
@@ -573,6 +636,11 @@
         translation:
           type: HL7
           useBatchHeaders: true
+          receivingApplicationName: MA-MDPH
+          receivingApplicationOID: 2.16.840.1.113883.19.3.2
+          receivingFacilityName: MA-MDPH
+          receivingFacilityOID: 2.16.840.1.113883.19.3.2
+          truncateHDNamespaceIds: true
 
   - name: nh-dphs
     description: New Hampshire Division of Public Health Services
@@ -604,6 +672,10 @@
         translation:
           type: HL7
           useBatchHeaders: true
+          receivingApplicationName: ALNBS
+          receivingApplicationOID: 2.16.840.1.114222.4.5.1
+          receivingFacilityName: ALDOH
+          receivingFacilityOID: 2.16.840.1.114222.4.1.3636
 
   - name: mi-phd
     description: Michigan Public Health Department
@@ -701,6 +773,25 @@
           operation: MERGE
           numberPerDay: 1440 # Every minute
           initialTime: 00:00
+      - name: elr-allegheny-debug
+        organizationName: pa-phd
+        topic: covid-19
+        jurisdictionalFilter: [ "matches(ordering_facility_state, PA)", "matches(ordering_facility_county, Allegheny)" ]
+        deidentify: false
+        translation:
+          type: CUSTOM
+          schemaName: pa/pa-covid-19-redox
+          defaults:
+            processing_mode_code: T
+            redox_destination_id: eb6c3769-75a4-4d10-9de0-8095cdc7f10f
+            redox_destination_name: "CDC Allegheny County PDH Destination (s)"
+            redox_source_id: d89d4057-930f-4c5b-bb39-8cddb326e928
+            redox_source_name: "Prime Data Hub (Staging)"
+          format: REDOX
+        timing:
+          operation: MERGE
+          numberPerDay: 1440 # Every minute
+          initialTime: 00:00
 
   - name: md-doh
     description: Maryland
@@ -714,7 +805,25 @@
           - orEquals(patient_state, MD, ordering_facility_state, MD)
         translation:
           type: HL7
-          schemaName: covid-19
+          useBatchHeaders: true
+        timing:
+          operation: MERGE
+          numberPerDay: 1440
+          initialTime: 00:00
+          timeZone: EASTERN
+
+  - name: md-phd
+    description: Maryland Public Health Department
+    jurisdiction: STATE
+    stateCode: MD
+    receivers:
+      - name: elr
+        organizationName: md-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(patient_state, MD, ordering_facility_state, MD)
+        translation:
+          type: HL7
           useBatchHeaders: true
         timing:
           operation: MERGE
@@ -723,15 +832,17 @@
           timeZone: EASTERN
 
   - name: "hhsprotect"
-    description: "HHS Protect"
+    description: "HHSProtect"
     jurisdiction: "FEDERAL"
     receivers:
     - name: "elr"
       organizationName: "hhsprotect"
-      topic: "covid-19-otc"
+      topic: "covid-19"
+      jurisdictionalFilter: [ "matches(sender_id,.*SafeHealth.*,.*CueHlth.*,.*ImageMover.*,Strac,InBios)" ]
+      qualityFilter: [ "allowAll()" ]
       translation:
         type: "CUSTOM"
-        schemaName: "waters/waters-covid-19"
+        schemaName: "hhsprotect/hhsprotect-covid-19"
         format: "CSV"
       deidentify: true
       timing:
@@ -764,7 +875,7 @@
         format: CSV
       - name: ignore-waters      # Use this to test sending waters data
         organizationName: ignore
-        topic: covid-19-otc
+        topic: covid-19
         schemaName: waters/waters-covid-19
         format: CSV
       - name: ignore-empty      # Use this to test sending data from the 'empty' schema
@@ -783,7 +894,7 @@
           initialTime: 00:00
         translation:
           type: CUSTOM
-          schemaName: fl/fl-covid-19
+          schemaName: az/pima-az-covid-19
           format: CSV
         transport:
           type: SFTP
@@ -860,25 +971,6 @@
           format: HL7
         transport:
           type: "NULL"
-      - name: SFTP_LEGACY
-        organizationName: ignore
-        topic: covid-19
-        jurisdictionalFilter: [ "matches(ordering_facility_state, IG)", "matches(ordering_facility_county, SFTP_LEGACY)" ]
-        timing:
-          operation: MERGE
-          numberPerDay: 1440 # Every minute
-          initialTime: 00:00
-        translation:
-          useBatchHeaders: true
-          type: HL7
-          schemaName: tx/tx-covid-19
-          receivingApplicationName: NEDSS
-          receivingFacilityName: SFTP_LEGACY
-        transport:
-          type: SFTP_LEGACY
-          host: sftp
-          port: 22
-          filePath: ./upload
       - name: BLOBSTORE
         organizationName: ignore
         topic: covid-19
@@ -889,7 +981,7 @@
           initialTime: 00:00
         translation:
           type: CUSTOM
-          schemaName: waters/waters-covid-19
+          schemaName: hhsprotect/hhsprotect-covid-19
           format: CSV
         transport:
           type: BLOBSTORE
@@ -912,5 +1004,528 @@
           host: sftp_FAIL_BAD
           port: 2222
           filePath: ./upload_FAIL
+      - name: QUALITY_PASS
+        organizationName: ignore
+        topic: covid-19
+        jurisdictionalFilter: [ "matches(ordering_facility_state, IG)", "matches(ordering_facility_county, QUALITY_PASS, removed)" ]
+        qualityFilter: 
+          - hasValidDataFor(message_id,ordering_facility_county,ordering_facility_state)
+          - hasAtLeastOneOf(message_id,blankField)
+          - matches(ordering_facility_county, QUALITY_PASS)
+        translation:
+          type: CUSTOM
+          schemaName: empty
+          format: CSV
+      - name: QUALITY_REVERSED
+        organizationName: ignore
+        topic: covid-19
+        jurisdictionalFilter: [ "matches(ordering_facility_state, IG)", "matches(ordering_facility_county, QUALITY_REVERSED, kept)" ]
+        qualityFilter: 
+          - hasValidDataFor(message_id,ordering_facility_county,ordering_facility_state)
+          - hasAtLeastOneOf(message_id,blankField)
+          - matches(ordering_facility_county, QUALITY_REVERSED)
+        # Get 'not(qualityFilter)'
+        reverseTheQualityFilter: true
+        translation:
+          type: CUSTOM
+          schemaName: empty
+          format: CSV
+      - name: QUALITY_ALL
+        organizationName: ignore
+        topic: covid-19
+        jurisdictionalFilter: [ "matches(ordering_facility_state, IG)", "matches(ordering_facility_county,QUALITY_ALL)" ]
+        qualityFilter: [ "allowAll()" ]
+        translation:
+          type: CUSTOM
+          schemaName: empty
+          format: CSV
+      - name: QUALITY_FAIL
+        organizationName: ignore
+        topic: covid-19
+        jurisdictionalFilter: [ "matches(ordering_facility_state, IG)", "matches(ordering_facility_county,QUALITY_FAIL)" ]
+        qualityFilter: [ "hasValidDataFor(blankField)", "hasAtLeastOneOf(message_id,blankField)" ]
+        translation:
+          type: CUSTOM
+          schemaName: empty
+          format: CSV
+
+
+# all the rest
+
+  - name: ak-phd
+    description: Alaska Public Health Department
+    jurisdiction: STATE
+    stateCode: AK
+    receivers:
+      - name: elr
+        organizationName: ak-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, AK, patient_state, AK)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: as-phd
+    description: American Samoa Public Health Department
+    jurisdiction: STATE
+    stateCode: AS
+    receivers:
+      - name: elr
+        organizationName: as-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, AS, patient_state, AS)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ar-phd
+    description: Arkansas Public Health Department
+    jurisdiction: STATE
+    stateCode: AR
+    receivers:
+      - name: elr
+        organizationName: ar-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, AR, patient_state, AR)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ct-phd
+    description: Connecticut Public Health Department
+    jurisdiction: STATE
+    stateCode: CT
+    receivers:
+      - name: elr
+        organizationName: ct-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, CT, patient_state, CT)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: dc-phd
+    description: District of Columbia Public Health Department
+    jurisdiction: STATE
+    stateCode: DC
+    receivers:
+      - name: elr
+        organizationName: dc-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, DC, patient_state, DC)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: fm-phd
+    description: Federated States of Micronesia Public Health Department
+    jurisdiction: STATE
+    stateCode: FM
+    receivers:
+      - name: elr
+        organizationName: fm-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, FM, patient_state, FM)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ga-phd
+    description: Georgia Public Health Department
+    jurisdiction: STATE
+    stateCode: GA
+    receivers:
+      - name: elr
+        organizationName: ga-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, GA, patient_state, GA)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: hi-phd
+    description: Hawaii Public Health Department
+    jurisdiction: STATE
+    stateCode: HI
+    receivers:
+      - name: elr
+        organizationName: hi-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, HI, patient_state, HI)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: id-phd
+    description: Idaho Public Health Department
+    jurisdiction: STATE
+    stateCode: ID
+    receivers:
+      - name: elr
+        organizationName: id-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, ID, patient_state, ID)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: il-phd
+    description: Illinois Public Health Department
+    jurisdiction: STATE
+    stateCode: IL
+    receivers:
+      - name: elr
+        organizationName: il-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, IL, patient_state, IL)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: in-phd
+    description: Indiana Public Health Department
+    jurisdiction: STATE
+    stateCode: IN
+    receivers:
+      - name: elr
+        organizationName: in-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, IN, patient_state, IN)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ia-phd
+    description: Iowa Public Health Department
+    jurisdiction: STATE
+    stateCode: IA
+    receivers:
+      - name: elr
+        organizationName: ia-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, IA, patient_state, IA)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ks-phd
+    description: Kansas Public Health Department
+    jurisdiction: STATE
+    stateCode: KS
+    receivers:
+      - name: elr
+        organizationName: ks-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, KS, patient_state, KS)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ky-phd
+    description: Kentucky Public Health Department
+    jurisdiction: STATE
+    stateCode: KY
+    receivers:
+      - name: elr
+        organizationName: ky-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, KY, patient_state, KY)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: me-phd
+    description: Maine Public Health Department
+    jurisdiction: STATE
+    stateCode: ME
+    receivers:
+      - name: elr
+        organizationName: me-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, ME, patient_state, ME)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: mh-phd
+    description: Marshall Islands Public Health Department
+    jurisdiction: STATE
+    stateCode: MH
+    receivers:
+      - name: elr
+        organizationName: mh-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, MH, patient_state, MH)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: mo-phd
+    description: Missouri Public Health Department
+    jurisdiction: STATE
+    stateCode: MO
+    receivers:
+      - name: elr
+        organizationName: mo-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, MO, patient_state, MO)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ne-phd
+    description: Nebraska Public Health Department
+    jurisdiction: STATE
+    stateCode: NE
+    receivers:
+      - name: elr
+        organizationName: ne-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, NE, patient_state, NE)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: nv-phd
+    description: Nevada Public Health Department
+    jurisdiction: STATE
+    stateCode: NV
+    receivers:
+      - name: elr
+        organizationName: nv-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, NV, patient_state, NV)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ny-phd
+    description: New York Public Health Department
+    jurisdiction: STATE
+    stateCode: NY
+    receivers:
+      - name: elr
+        organizationName: ny-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, NY, patient_state, NY)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: mp-phd
+    description: Northern Mariana Islands Public Health Department
+    jurisdiction: STATE
+    stateCode: MP
+    receivers:
+      - name: elr
+        organizationName: mp-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, MP, patient_state, MP)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ok-phd
+    description: Oklahoma Public Health Department
+    jurisdiction: STATE
+    stateCode: OK
+    receivers:
+      - name: elr
+        organizationName: ok-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, OK, patient_state, OK)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: or-phd
+    description: Oregon Public Health Department
+    jurisdiction: STATE
+    stateCode: OR
+    receivers:
+      - name: elr
+        organizationName: or-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, OR, patient_state, OR)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: pw-phd
+    description: Palau Public Health Department
+    jurisdiction: STATE
+    stateCode: PW
+    receivers:
+      - name: elr
+        organizationName: pw-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, PW, patient_state, PW)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: pr-phd
+    description: Puerto Rico Public Health Department
+    jurisdiction: STATE
+    stateCode: PR
+    receivers:
+      - name: elr
+        organizationName: pr-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, PR, patient_state, PR)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ri-phd
+    description: Rhode Island Public Health Department
+    jurisdiction: STATE
+    stateCode: RI
+    receivers:
+      - name: elr
+        organizationName: ri-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, RI, patient_state, RI)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: sc-phd
+    description: South Carolina Public Health Department
+    jurisdiction: STATE
+    stateCode: SC
+    receivers:
+      - name: elr
+        organizationName: sc-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, SC, patient_state, SC)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: sd-phd
+    description: South Dakota Public Health Department
+    jurisdiction: STATE
+    stateCode: SD
+    receivers:
+      - name: elr
+        organizationName: sd-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, SD, patient_state, SD)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: ut-phd
+    description: Utah Public Health Department
+    jurisdiction: STATE
+    stateCode: UT
+    receivers:
+      - name: elr
+        organizationName: ut-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, UT, patient_state, UT)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: vi-phd
+    description: Virgin Islands Public Health Department
+    jurisdiction: STATE
+    stateCode: VI
+    receivers:
+      - name: elr
+        organizationName: vi-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, VI, patient_state, VI)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: va-phd
+    description: Virginia Public Health Department
+    jurisdiction: STATE
+    stateCode: VA
+    receivers:
+      - name: elr
+        organizationName: va-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, VA, patient_state, VA)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: wa-phd
+    description: Washington Public Health Department
+    jurisdiction: STATE
+    stateCode: WA
+    receivers:
+      - name: elr
+        organizationName: wa-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, WA, patient_state, WA)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: wv-phd
+    description: West Virginia Public Health Department
+    jurisdiction: STATE
+    stateCode: WV
+    receivers:
+      - name: elr
+        organizationName: wv-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, WV, patient_state, WV)
+        translation:
+          type: HL7
+          useBatchHeaders: true
+
+  - name: wy-phd
+    description: Wyoming Public Health Department
+    jurisdiction: STATE
+    stateCode: WY
+    receivers:
+      - name: elr
+        organizationName: wy-phd
+        topic: covid-19
+        jurisdictionalFilter:
+          - orEquals(ordering_facility_state, WY, patient_state, WY)
+        translation:
+          type: HL7
+          useBatchHeaders: true
 
 

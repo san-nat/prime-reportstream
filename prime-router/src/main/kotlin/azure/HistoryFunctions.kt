@@ -69,7 +69,7 @@ class Action private constructor(
 }
 
 class ReportView private constructor( 
-    val sent: String?,
+    val sent: Long?,
     val via: String?,
     val positive: Long?,
     val total: Long?,
@@ -83,7 +83,7 @@ class ReportView private constructor(
     val actions: ArrayList<Action>? ){
     
     data class Builder(
-        var sent: String? = null,
+        var sent: Long? = null,
         var via: String? = null,
         var positive: Long? = null,
         var total: Long? = null, 
@@ -96,7 +96,7 @@ class ReportView private constructor(
         var facilities: ArrayList<Facility>? = ArrayList<Facility>(),
         var actions: ArrayList<Action>? = ArrayList<Action>() ){
 
-        fun sent( sent: String ) = apply { this.sent = sent }
+        fun sent( sent: Long ) = apply { this.sent = sent }
         fun via( via: String ) = apply { this.via = via }
         fun positive( positive: Long ) = apply { this.positive = positive }
         fun total( total: Long ) = apply{ this.total = total }
@@ -223,7 +223,7 @@ class GetSummary: BaseHistoryFunction() {
 
 open class BaseHistoryFunction {
 
-    val DAYS_TO_SHOW = 7L
+    val DAYS_TO_SHOW = 30L
     val workflowEngine = WorkflowEngine()
 
     fun GetReports(request: HttpRequestMessage<String?>, context: ExecutionContext): HttpResponseMessage {
@@ -240,18 +240,22 @@ open class BaseHistoryFunction {
 
                 var facilities = arrayListOf<Facility>();
                 if( it.bodyFormat == "CSV")
-                    facilities = getFieldSummaryForReportId(arrayOf("Testing_lab_name","Testing_lab_CLIA"),it.reportId.toString(), authClaims)
+                    try{ 
+                        facilities = getFieldSummaryForReportId(arrayOf("Testing_lab_name","Testing_lab_CLIA"),it.reportId.toString(), authClaims)
+                    }catch( ex: Exception ){
+                        //context.logger.info( "Exception during getFieldSummaryForReportId - TestingLabName was not found - no facilities data will be published" );
+                    }
 
                 var actions = getActionsForReportId( it.reportId.toString(), authClaims );
 
                 ReportView.Builder()
                     .reportId( it.reportId.toString() )
-                    .sent( it.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) )
+                    .sent( it.createdAt.toEpochSecond() * 1000 )
                     .via( it.bodyFormat )
                     .total( it.itemCount.toLong() )
                     .fileType( it.bodyFormat )
                     .type( "ELR" )
-                    .expires( DAYS_TO_SHOW - it.createdAt.until(OffsetDateTime.now(), ChronoUnit.DAYS), )
+                    .expires( it.createdAt.plusDays( DAYS_TO_SHOW ).toEpochSecond() * 1000 )
                     .facilities(facilities)
                     .actions(actions)
                 .build()        
@@ -262,7 +266,7 @@ open class BaseHistoryFunction {
                 .header("Content-Type", "application/json")
                 .build()
         }catch (ex: Exception) {
-            context.logger.log(Level.WARNING, "Exception during download of reports", ex)
+            context.logger.info("Exception during creating of reports list - file not found")
             response = request.createResponseBuilder(HttpStatus.NOT_FOUND)
                 .body("File not found")
                 .header("Content-Type", "text/html")
@@ -292,7 +296,7 @@ open class BaseHistoryFunction {
                     .build()
             }
         } catch (ex: Exception) {
-            context.logger.log(Level.WARNING, "Exception during download of $reportIdIn", ex)
+            context.logger.warning("Exception during download of $reportIdIn - file not found")
             response = request.createResponseBuilder(HttpStatus.NOT_FOUND)
                 .body("File $reportIdIn not found")
                 .header("Content-Type", "text/html")
@@ -361,7 +365,7 @@ open class BaseHistoryFunction {
 
         } 
         catch (ex: Exception) {
-            context.logger.log(Level.WARNING, "Exception during download of summary/tests", ex)
+            context.logger.info("Exception during download of summary/tests")
             response = request.createResponseBuilder(HttpStatus.NOT_FOUND)
                 .body("File not found")
                 .header("Content-Type", "text/html")
@@ -391,7 +395,7 @@ open class BaseHistoryFunction {
                 .header("Content-Type", "application/json")
                 .build()
         }catch (ex: Exception) {
-            context.logger.log(Level.WARNING, "Exception during download of summry", ex)
+            context.logger.info("Exception during download of summary")
             response = request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Exception during GetSummary()")
                 .header("Content-Type", "text/html")

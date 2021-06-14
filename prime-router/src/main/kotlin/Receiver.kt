@@ -14,11 +14,13 @@ import java.time.ZoneId
  * @param organizationName of the receiver
  * @param topic defines the set of schemas that can translate to each other
  * @param translation configuration to translate
- * @param jurisdictionalFilter defines the set of elements and regexs that filter the topic
+ * @param jurisdictionalFilter defines the set of elements and regexs that filter the data for this receiver
+ * @param qualityFilter defines the set of elements and regexs that do qualiyt filtering on the data for this receiver
  * @param deidentify transform
  * @param timing defines how to delay reports to the org. If null, then send immediately
  * @param description of the receiver
  * @param transport that the org wishes to receive
+ * @param fileNameTemplate a template that defines what the file name should look like
  */
 open class Receiver(
     val name: String,
@@ -26,10 +28,13 @@ open class Receiver(
     val topic: String,
     val translation: TranslatorConfiguration,
     val jurisdictionalFilter: List<String> = emptyList(),
+    val qualityFilter: List<String> = emptyList(),
+    // If this is true, then do the NOT of 'qualityFilter'.  Like a 'grep -v'
+    val reverseTheQualityFilter: Boolean = false,
     val deidentify: Boolean = false,
     val timing: Timing? = null,
     val description: String = "",
-    val transport: TransportType? = null,
+    val transport: TransportType? = null
 ) {
     // Custom constructor
     constructor(
@@ -40,7 +45,7 @@ open class Receiver(
         format: Report.Format = Report.Format.CSV
     ) : this(
         name, organizationName, topic,
-        CustomConfiguration(schemaName = schemaName, format = format, emptyMap(), Report.NameFormat.STANDARD, null)
+        CustomConfiguration(schemaName = schemaName, format = format, emptyMap(), "standard", null)
     )
 
     constructor(copy: Receiver) : this(
@@ -49,10 +54,12 @@ open class Receiver(
         copy.topic,
         copy.translation,
         copy.jurisdictionalFilter,
+        copy.qualityFilter,
+        copy.reverseTheQualityFilter,
         copy.deidentify,
         copy.timing,
         copy.description,
-        copy.transport,
+        copy.transport
     )
 
     @get:JsonIgnore

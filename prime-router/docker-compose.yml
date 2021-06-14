@@ -10,7 +10,7 @@ services:
         INSECURE_SSL: "${PRIME_DATA_HUB_INSECURE_SSL}"
     volumes: # Attach the PWD into the image
       - type: bind
-        source: ./target
+        source: ./build
         target: /prime-data-hub-router
     entrypoint: [/prime-data-hub-router/start_func.sh]
     env_file:
@@ -39,7 +39,12 @@ services:
 
   # Azurite is the Azure storage emulator for local development
   azurite: 
-    image: mcr.microsoft.com/azure-storage/azurite
+    image: mcr.microsoft.com/azure-storage/azurite:3.12.0
+    # uncomment the line below to skip x-ms-version checks
+    # command: azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0
+    volumes:
+      # map to Azurite data objects to the build directory
+      - ./build/azurite:/data
     ports:  
       - 10000:10000 
       - 10001:10001
@@ -50,8 +55,8 @@ services:
     ports:
         - "2222:22"
     volumes:
-      - ./target/sftp:/home/foo/upload        
-    command: foo:pass:::upload     
+      - ./build/sftp:/home/foo/upload
+    command: foo:pass:1001::upload
 
   redox:
     image: mockserver/mockserver:mockserver-5.11.1

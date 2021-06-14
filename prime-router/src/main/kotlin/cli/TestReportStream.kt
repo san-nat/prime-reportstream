@@ -11,6 +11,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.ajalt.clikt.parameters.types.int
+import com.google.common.base.CharMatcher
 import gov.cdc.prime.router.FileSettings
 import gov.cdc.prime.router.Metadata
 import gov.cdc.prime.router.REPORT_MAX_ITEMS
@@ -27,6 +28,7 @@ import gov.cdc.prime.router.azure.WorkflowEngine
 import gov.cdc.prime.router.azure.db.Tables.ACTION
 import gov.cdc.prime.router.azure.db.enums.TaskAction
 import gov.cdc.prime.router.azure.db.tables.pojos.Action
+import org.jooq.exception.DataAccessException
 import org.jooq.impl.DSL
 import org.jooq.impl.DSL.max
 import java.io.File
@@ -35,6 +37,7 @@ import java.net.HttpURLConnection
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.OffsetDateTime
+import java.util.Locale
 import kotlin.concurrent.thread
 import kotlin.random.Random
 import kotlin.system.exitProcess
@@ -45,7 +48,6 @@ import kotlin.time.measureTime
 enum class TestStatus(val description: String) {
     DRAFT("Experimental"), // Tests that are experimental
     FAILS("Always fails"), // For tests that just always fail, and we haven't fixed the issue yet.
-    SLOW("Good test, but slow"), // For tests that are crazy slow
     LOAD("Load Test"),
     GOODSTUFF("Part of Smoke test"), // Only Smoke the Good Stuff.
 }
@@ -75,7 +77,12 @@ Examples:
 """,
 ) {
 
-    val defaultWorkingDir = "./target/csv_test_files"
+    val defaultWorkingDir = "./build/csv_test_files"
+
+    /**
+     * The local folder used by the dev Docker instance to save files uploaded to the SFTP server
+     */
+    val SFTP_DIR = "build/sftp"
 
     private val list by option(
         "--list",
@@ -130,6 +137,11 @@ Examples:
         help = "specify a working directory for generated files.  Default is $defaultWorkingDir"
     ).default(defaultWorkingDir)
 
+    private val sftpDir by option(
+        "--sftpdir",
+        help = "specify the folder where files were uploaded to the SFTP server.  Default is $SFTP_DIR"
+    ).default(SFTP_DIR)
+
     // Avoid accidentally connecting to the wrong database.
     private fun envSanityCheck() {
         val dbEnv = System.getenv("POSTGRES_URL") ?: error("Missing database env var. For help:  ./prime --help")
@@ -159,7 +171,7 @@ Examples:
             printTestList(coolTestList)
             exitProcess(0)
         }
-        val environment = ReportStreamEnv.valueOf(env.toUpperCase())
+        val environment = ReportStreamEnv.valueOf(env.uppercase())
 
         val tests = if (run != null) {
             run.toString().split(",").mapNotNull { test ->
@@ -192,9 +204,9 @@ Examples:
 
     private fun runTests(tests: List<CoolTest>, environment: ReportStreamEnv) {
         val failures = mutableListOf<CoolTest>()
-        val options = CoolTestOptions(items, submits, key, dir)
+        val options = CoolTestOptions(items, submits, key, dir, sftpDir = sftpDir, env = env)
         tests.forEach { test ->
-            if (!test.run(environment,options))
+            if (!test.run(environment, options))
                 failures.add(test)
         }
         if (failures.isNotEmpty()) {
@@ -210,6 +222,7 @@ Examples:
             End2End(),
             Merge(),
             Garbage(),
+            QualityFilter(),
             Hl7Null(),
             TooManyCols(),
             BadCsv(),
@@ -222,16 +235,19 @@ Examples:
             HammerTime(),
             Waters(),
             RepeatWaters(),
+            InternationalContent()
         )
     }
 }
 
-data class CoolTestOptions (
+data class CoolTestOptions(
     val items: Int = 5,
     val submits: Int = 5,
     val key: String? = null,
     val dir: String,
-    var muted: Boolean = false,  // if true, print out less stuff
+    var muted: Boolean = false, // if true, print out less stuff,
+    val sftpDir: String,
+    val env: String
 )
 
 abstract class CoolTest {
@@ -341,9 +357,10 @@ abstract class CoolTest {
             ?: error("Unable to find sender $emptySenderName for organization ${org.name}")
 
         val allGoodReceivers = settings.receivers.filter {
-            it.organizationName == orgName
-                && !it.name.contains("FAIL")
-                && !it.name.contains("BLOBSTORE")
+            it.organizationName == orgName &&
+                !it.name.contains("FAIL") &&
+                !it.name.contains("BLOBSTORE") &&
+                !it.name.contains("QUALITY")
         }
         val allGoodCounties = allGoodReceivers.map { it.name }.joinToString(",")
 
@@ -352,12 +369,23 @@ abstract class CoolTest {
         val hl7BatchReceiver = allGoodReceivers.filter { it.name == "HL7_BATCH" }[0]
         val redoxReceiver = allGoodReceivers.filter { it.name == "REDOX" }[0]
         val hl7NullReceiver = allGoodReceivers.filter { it.name == "HL7_NULL" }[0]
-        val sftpLegacyReceiver = allGoodReceivers.filter { it.name == "SFTP_LEGACY" }[0]
         val blobstoreReceiver = settings.receivers.filter {
             it.organizationName == orgName && it.name == "BLOBSTORE"
         }[0]
         val sftpFailReceiver = settings.receivers.filter {
             it.organizationName == orgName && it.name == "SFTP_FAIL"
+        }[0]
+        val qualityGoodReceiver = settings.receivers.filter {
+            it.organizationName == orgName && it.name == "QUALITY_PASS"
+        }[0]
+        val qualityAllReceiver = settings.receivers.filter {
+            it.organizationName == orgName && it.name == "QUALITY_ALL"
+        }[0]
+        val qualityFailReceiver = settings.receivers.filter {
+            it.organizationName == orgName && it.name == "QUALITY_FAIL"
+        }[0]
+        val qualityReversedReceiver = settings.receivers.filter {
+            it.organizationName == orgName && it.name == "QUALITY_REVERSED"
         }[0]
 
         const val ANSI_RESET = "\u001B[0m"
@@ -379,7 +407,7 @@ abstract class CoolTest {
         }
 
         /**
-         * A hack attempt to wait enough time, but not too long, for Hub to finish.
+         * A hack attempt to wait enough time, but not too long, for ReportStream to finish.
          * This assumes the batch/send executes on the minute boundary.
          */
         fun waitABit(plusSecs: Int, env: ReportStreamEnv, silent: Boolean = false) {
@@ -392,7 +420,7 @@ abstract class CoolTest {
                 // Or, we are in Test or Staging, which don't execute on the top of the minute.
                 waitSecs += 90
             }
-            echo("Waiting $waitSecs seconds for the Hub to fully receive, batch, and send the data")
+            echo("Waiting $waitSecs seconds for ReportStream to fully receive, batch, and send the data")
             for (i in 1..waitSecs) {
                 sleep(1000)
                 if (!silent) print(".")
@@ -433,6 +461,24 @@ abstract class CoolTest {
               and RF.report_id in
               (select report_descendants(?)) """
             return ctx.fetchOne(sql, receivingOrgSvc, action, reportId)?.into(Int::class.java)
+        }
+
+        /**
+         * Fetch the one uploaded file to SFTP for a given [reportId] and [receivingOrgSvc].
+         * @return the filename of the uploaded file
+         */
+        fun sftpFilenameQuery(
+            txn: DataAccessTransaction,
+            reportId: ReportId,
+            receivingOrgSvc: String
+        ): String? {
+            val ctx = DSL.using(txn)
+            val sql = """select RF.external_name
+                from report_file as RF
+                join action as A ON A.action_id = RF.action_id
+                where RF.report_id in (select find_sent_reports(?)) AND RF.receiving_org_svc = ? 
+                order by A.action_id """
+            return ctx.fetchOne(sql, reportId, receivingOrgSvc)?.into(String::class.java)
         }
 
         // Find the most recent action taken in the system
@@ -487,6 +533,7 @@ class End2End : CoolTest() {
     override val status = TestStatus.GOODSTUFF
 
     override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
+        var passed = true
         ugly("Starting $name Test: send ${simpleRepSender.fullName} data to $allGoodCounties")
         val fakeItemCount = allGoodReceivers.size * options.items
         val file = FileUtilities.createFakeFile(
@@ -498,20 +545,29 @@ class End2End : CoolTest() {
             options.dir,
         )
         echo("Created datafile $file")
-        // Now send it to the Hub.
+        // Now send it to ReportStream.
         val (responseCode, json) =
             HttpUtilities.postReportFile(environment, file, org.name, simpleRepSender.name, options.key)
-        echo("Response to POST: $responseCode")
-        echo(json)
         if (responseCode != HttpURLConnection.HTTP_CREATED) {
-            return bad("***end2end Test FAILED***:  response code $responseCode")
+            bad("***end2end Test FAILED***:  response code $responseCode")
+            passed = false
+        } else {
+            good("Posting of report succeeded with response code $responseCode")
         }
+        echo(json)
         try {
             val tree = jacksonObjectMapper().readTree(json)
             val reportId = ReportId.fromString(tree["id"].textValue())
             echo("Id of submitted report: $reportId")
+            val topic = tree["topic"]
+            if (topic != null && !topic.isNull && topic.textValue().equals("covid-19", true)) {
+                good("'topic' is in response and correctly set to 'covid-19'")
+            } else {
+                bad("***end2end Test FAILED***: 'topic' is missing from response json")
+                passed = false
+            }
             waitABit(25, environment)
-            return examineLineageResults(reportId, allGoodReceivers, fakeItemCount)
+            return passed and examineLineageResults(reportId, allGoodReceivers, fakeItemCount)
         } catch (e: NullPointerException) {
             return bad("***end2end Test FAILED***: Unable to properly parse response json")
         }
@@ -525,7 +581,7 @@ class Merge : CoolTest() {
 
     override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
         // Remove HL7 - it does not merge   TODO write a notMerging test for HL7, but its similar to end2end
-        val mergingReceivers = listOf<Receiver>(csvReceiver, hl7BatchReceiver, redoxReceiver, sftpLegacyReceiver)
+        val mergingReceivers = listOf<Receiver>(csvReceiver, hl7BatchReceiver, redoxReceiver)
         val mergingCounties = mergingReceivers.map { it.name }.joinToString(",")
         val fakeItemCount = mergingReceivers.size * options.items
         ugly("Starting merge test:  Merge ${options.submits} reports, each of which sends to $allGoodCounties")
@@ -538,7 +594,7 @@ class Merge : CoolTest() {
             options.dir,
         )
         echo("Created datafile $file")
-        // Now send it to the Hub over and over
+        // Now send it to ReportStream over and over
         val reportIds = (1..options.submits).map {
             val (responseCode, json) =
                 HttpUtilities.postReportFile(environment, file, org.name, simpleRepSender.name, options.key)
@@ -576,7 +632,7 @@ class Hl7Null : CoolTest() {
             options.dir,
         )
         echo("Created datafile $file")
-        // Now send it to the Hub.   Make numResends > 1 to create merges.
+        // Now send it to ReportStream.   Make numResends > 1 to create merges.
         val numResends = 1
         val reportIds = (1..numResends).map {
             val (responseCode, json) =
@@ -693,7 +749,7 @@ class Strac : CoolTest() {
             options.dir,
         )
         echo("Created datafile $file")
-        // Now send it to the Hub.
+        // Now send it to ReportStream.
         val (responseCode, json) =
             HttpUtilities.postReportFile(environment, file, org.name, stracSender.name, options.key)
         echo("Response to POST: $responseCode")
@@ -705,13 +761,14 @@ class Strac : CoolTest() {
             val tree = jacksonObjectMapper().readTree(json)
             val reportId = ReportId.fromString(tree["id"].textValue())
             echo("Id of submitted report: $reportId")
+            val expectedWarningCount = 0
             val warningCount = tree["warningCount"].intValue()
-            if (warningCount == allGoodReceivers.size - 1) {
+            if (warningCount == expectedWarningCount) {
                 good("First part of strac Test passed: $warningCount warnings were returned.")
             } else {
                 // Current expectation is that all non-REDOX counties fail.   If those issues get fixed,
                 // then we'll need to fix this test as well.
-                bad("***strac Test FAILED: Expecting ${allGoodReceivers.size - 1} warnings but got $warningCount***")
+                bad("***strac Test FAILED: Expecting $expectedWarningCount warnings but got $warningCount***")
                 passed = false
             }
             // OK, fine, the others failed.   All our hope now rests on you, REDOX - don't let us down!
@@ -724,14 +781,16 @@ class Strac : CoolTest() {
 }
 
 class StracPack : CoolTest() {
-    override val name = "stracpack"   // no its not 'strackpack'
+    override val name = "stracpack" // no its not 'strackpack'
     override val description = "Does '--submits X' simultaneous strac " +
         "submissions, each with '--items Y' items. Redox only"
     override val status = TestStatus.LOAD
 
     override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
-        ugly("Starting stracpack Test: simultaneously submitting ${options.submits} batches " +
-            "of Strac ${options.items} items per batch to the ${redoxReceiver.name} receiver only.")
+        ugly(
+            "Starting stracpack Test: simultaneously submitting ${options.submits} batches " +
+                "of Strac ${options.items} items per batch to the ${redoxReceiver.name} receiver only."
+        )
         val file = FileUtilities.createFakeFile(
             metadata,
             stracSender,
@@ -741,7 +800,7 @@ class StracPack : CoolTest() {
             options.dir,
         )
         echo("Created datafile $file")
-        // Now send it to the Hub over and over
+        // Now send it to ReportStream over and over
         var reportIds = mutableListOf<ReportId>()
         var passed = true
         // submit in thread grouping somewhat smaller than our database pool size.
@@ -764,7 +823,7 @@ class StracPack : CoolTest() {
             }
         }
         // Since we have to wait for the sends anyway, I didn't bother with a join here.
-        waitABit(5 * options.submits, environment)  // SWAG: wait extra seconds extra per file submitted
+        waitABit(5 * options.submits, environment) // SWAG: wait extra seconds extra per file submitted
         reportIds.forEach {
             passed = passed and
                 examineLineageResults(it, listOf(redoxReceiver), options.items)
@@ -800,7 +859,7 @@ class Waters : CoolTest() {
         val reportId = ReportId.fromString(tree["id"].textValue())
         echo("Id of submitted report: $reportId")
         waitABit(60, environment, options.muted)
-        if (file.exists()) file.delete()  // because of RepeatWaters
+        if (file.exists()) file.delete() // because of RepeatWaters
         return examineLineageResults(reportId, listOf(blobstoreReceiver), options.items)
     }
 }
@@ -815,8 +874,8 @@ class RepeatWaters : CoolTest() {
         ugly("Starting $name Test: sending Waters data ${options.submits} times.")
         var allPassed = true
         var totalItems = 0
-        val sleepBetweenSubmitMillis = 1000
-        val variationMillis = 1000
+        val sleepBetweenSubmitMillis = 360
+        val variationMillis = 360
         val pace = (3600000 / sleepBetweenSubmitMillis) * options.items
         echo("Submitting at an expected pace of $pace items per hour")
         options.muted = true
@@ -841,10 +900,10 @@ class RepeatWaters : CoolTest() {
             echo("Submits done.  Now waiting for checking results to complete")
             threads.forEach { it.join() }
         }
-        echo("$name Test took ${elapsed.inSeconds} seconds. Expected pace/hr: $pace.")
-        if (elapsed.inSeconds > 600) {
+        echo("$name Test took ${elapsed.inWholeSeconds} seconds. Expected pace/hr: $pace.")
+        if (elapsed.inWholeSeconds > 600) {
             // pace calculation is inaccurate for short times, due to the hack long wait at the end.
-            val actualPace = (totalItems / elapsed.inSeconds) * 3600
+            val actualPace = (totalItems / elapsed.inWholeSeconds) * 3600
             echo(" Actual pace: $actualPace")
         }
         return allPassed
@@ -872,7 +931,7 @@ class HammerTime : CoolTest() {
             options.dir,
         )
         echo("Created datafile $file")
-        // Now send it to the Hub over and over
+        // Now send it to ReportStream over and over
         var reportIds = mutableListOf<ReportId>()
         var passed = true
         // submit in thread grouping somewhat smaller than our database pool size.
@@ -895,7 +954,7 @@ class HammerTime : CoolTest() {
             }
         }
         // Since we have to wait for the sends anyway, I didn't bother with a join here.
-        waitABit(5 * options.submits, environment)  // SWAG: wait 5 seconds extra per file submitted
+        waitABit(5 * options.submits, environment) // SWAG: wait 5 seconds extra per file submitted
         reportIds.forEach {
             passed = passed and
                 examineLineageResults(it, listOf(receiverToTest), options.items)
@@ -907,7 +966,7 @@ class HammerTime : CoolTest() {
 class Garbage : CoolTest() {
     override val name = "garbage"
     override val description = "Garbage in - Nice error message out"
-    override val status = TestStatus.GOODSTUFF
+    override val status = TestStatus.FAILS // new quality checks now prevent any data from flowing to other checks
 
     override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
         ugly("Starting $name Test: send ${emptySender.fullName} data to $allGoodCounties")
@@ -922,7 +981,7 @@ class Garbage : CoolTest() {
             options.dir,
         )
         echo("Created datafile $file")
-        // Now send it to the Hub.
+        // Now send it to ReportStream.
         val (responseCode, json) =
             HttpUtilities.postReportFile(environment, file, org.name, emptySender.name, options.key)
         echo("Response to POST: $responseCode")
@@ -951,10 +1010,119 @@ class Garbage : CoolTest() {
     }
 }
 
+class QualityFilter : CoolTest() {
+    override val name = "qualityfilter"
+    override val description = "Test the QualityFilter feature"
+    override val status = TestStatus.GOODSTUFF
+
+    /**
+     * In the returned json, check the itemCount associated with receiver.name in the list of destinations.
+     */
+    fun checkJsonItemCountForReceiver(receiver: Receiver, expectedCount: Int, json: String): Boolean {
+        try {
+            echo(json)
+            val tree = jacksonObjectMapper().readTree(json)
+            val reportId = ReportId.fromString(tree["id"].textValue())
+            echo("Id of submitted report: $reportId")
+            val destinations = tree["destinations"] as ArrayNode
+            for (i in 0 until destinations.size()) {
+                val dest = destinations[i] as ObjectNode
+                if (dest["service"].textValue() == receiver.name) {
+                    if (dest["itemCount"].intValue() == expectedCount) {
+                        return good("Test Passed: For ${receiver.name} expected $expectedCount and found $expectedCount")
+                    } else {
+                        return bad("***Test FAILED***; For ${receiver.name} expected $expectedCount but got ${dest["itemCount"].intValue()}")
+                    }
+                }
+            }
+            if (expectedCount == 0)
+                return good("Test Passed: No data went to ${receiver.name} dest")
+            else
+                return bad("***Test FAILED***: No data went to ${receiver.name} dest")
+        } catch (e: Exception) {
+            return bad("***$name Test FAILED***: Unexpected json returned for ${receiver.name}")
+        }
+    }
+
+    override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
+        ugly("Starting $name Test")
+        // ALLOW ALL
+        ugly("\nTest the allowAll QualityFilter")
+        val fakeItemCount = 5
+        val file = FileUtilities.createFakeFile(
+            metadata,
+            emptySender,
+            fakeItemCount,
+            receivingStates,
+            qualityAllReceiver.name, // Has the 'allowAll' quality filter
+            options.dir,
+        )
+        echo("Created datafile $file")
+        // Now send it to ReportStream.
+        val (responseCode, json) =
+            HttpUtilities.postReportFile(environment, file, org.name, emptySender.name, options.key)
+        echo("Response to POST: $responseCode")
+        var passed = checkJsonItemCountForReceiver(qualityAllReceiver, fakeItemCount, json)
+
+        // QUALITY_PASS
+        ugly("\nTest a QualityFilter that allows some data through")
+        val file2 = FileUtilities.createFakeFile(
+            metadata,
+            emptySender,
+            fakeItemCount,
+            receivingStates,
+            qualityGoodReceiver.name + ",removed", // 3 kept, 2 removed
+            options.dir,
+        )
+        echo("Created datafile $file2")
+        // Now send it to ReportStream.
+        val (responseCode2, json2) =
+            HttpUtilities.postReportFile(environment, file2, org.name, emptySender.name, options.key)
+        echo("Response to POST: $responseCode2")
+        passed = passed and checkJsonItemCountForReceiver(qualityGoodReceiver, 3, json2)
+
+        // FAIL
+        ugly("\nTest a QualityFilter that allows NO data through.")
+        val file3 = FileUtilities.createFakeFile(
+            metadata,
+            emptySender,
+            fakeItemCount,
+            receivingStates,
+            qualityFailReceiver.name,
+            options.dir,
+        )
+        echo("Created datafile $file3")
+        // Now send it to ReportStream.
+        val (responseCode3, json3) =
+            HttpUtilities.postReportFile(environment, file3, org.name, emptySender.name, options.key)
+        echo("Response to POST: $responseCode3")
+        passed = passed and checkJsonItemCountForReceiver(qualityFailReceiver, 0, json3)
+
+        // QUALITY_REVERSED
+        ugly("\nTest the REVERSE of the QualityFilter that allows some data through")
+        val file4 = FileUtilities.createFakeFile(
+            metadata,
+            emptySender,
+            fakeItemCount,
+            receivingStates,
+            qualityReversedReceiver.name + ",kept", // 3 removed, 2 kept
+            options.dir,
+        )
+        echo("Created datafile $file4")
+        // Now send it to ReportStream.
+        val (responseCode4, json4) =
+            HttpUtilities.postReportFile(environment, file4, org.name, emptySender.name, options.key)
+        echo("Response to POST: $responseCode4")
+        passed = passed and checkJsonItemCountForReceiver(qualityReversedReceiver, 2, json4)
+
+        return passed
+    }
+}
+
 class Huge : CoolTest() {
     override val name = "huge"
     override val description = "Submit $REPORT_MAX_ITEMS line csv file, wait, confirm via db.  Slow."
-    override val status = TestStatus.SLOW
+    override val status = TestStatus.LOAD
 
     override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
         val fakeItemCount = REPORT_MAX_ITEMS
@@ -969,7 +1137,7 @@ class Huge : CoolTest() {
             Report.Format.CSV
         )
         echo("Created datafile $file")
-        // Now send it to the Hub.
+        // Now send it to ReportStream.
         val (responseCode, json) =
             HttpUtilities.postReportFile(environment, file, org.name, simpleRepSender.name, options.key)
         echo("Response to POST: $responseCode")
@@ -989,7 +1157,7 @@ class Huge : CoolTest() {
 class TooBig : CoolTest() {
     override val name = "toobig"
     override val description = "Submit ${REPORT_MAX_ITEMS + 1} lines, which should be an error.  Slower ;)"
-    override val status = TestStatus.SLOW
+    override val status = TestStatus.LOAD
 
     override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
         val fakeItemCount = REPORT_MAX_ITEMS + 1
@@ -1004,7 +1172,7 @@ class TooBig : CoolTest() {
             Report.Format.CSV
         )
         echo("Created datafile $file")
-        // Now send it to the Hub.
+        // Now send it to ReportStream.
         val (responseCode, json) =
             HttpUtilities.postReportFile(environment, file, org.name, simpleRepSender.name, options.key)
         echo("Response to POST: $responseCode")
@@ -1027,12 +1195,12 @@ class TooBig : CoolTest() {
  * Test weirdness in Staging wherein we have strange HL7 'send' numbers
  *
  * This test, when it fails, exposes a database connection exception in Staging.
- *
+ * I think this is actually passing now, but the query isn't quite right.
  */
 class DbConnections : CoolTest() {
     override val name = "dbconnections"
-    override val description = "Test weird issue wherein many 'sends' cause db connection failures"
-    override val status = TestStatus.FAILS
+    override val description = "Test issue wherein many 'sends' caused db connection failures"
+    override val status = TestStatus.DRAFT
 
     override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
         ugly("Starting dbconnections Test: test of many threads attempting to sftp ${options.items} HL7s.")
@@ -1045,7 +1213,7 @@ class DbConnections : CoolTest() {
             options.dir,
         )
         echo("Created datafile $file")
-        // Now send it to the Hub.   Make numResends > 1 to create merges.
+        // Now send it to ReportStream.   Make numResends > 1 to create merges.
         val reportIds = (1..options.submits).map {
             val (responseCode, json) =
                 HttpUtilities.postReportFile(environment, file, org.name, simpleRepSender.name, options.key)
@@ -1061,7 +1229,12 @@ class DbConnections : CoolTest() {
             reportId
         }
         waitABit(30, environment)
-        return examineMergeResults(reportIds[0], listOf(hl7Receiver), options.items, options.submits)
+        var passed = true
+        reportIds.forEach {
+            passed = passed and
+                examineLineageResults(it, listOf(hl7Receiver), options.items)
+        }
+        return passed
     }
 }
 
@@ -1102,5 +1275,78 @@ class BadSftp : CoolTest() {
         waitABit(30, environment)
         echo("For this test, failure during send, is a 'pass'.   Need to fix this.")
         return examineLineageResults(reportId, listOf(sftpFailReceiver), options.items)
+    }
+}
+
+/**
+ * Generate a report with international characters to verify we can handle them.  This test will send the
+ * report file and inspect the uploaded file to the SFTP server to make sure the international characters are
+ * present.  This test can only be run locally because of the testing of the uploaded files.
+ */
+class InternationalContent : CoolTest() {
+    override val name = "intcontent"
+    override val description = "Create Fake data that includes international characters, submit, wait, confirm sent via database lineage data"
+    override val status = TestStatus.DRAFT // Because this can only be run local to get access to the SFTP folder
+
+    override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
+        if (options.env != "local") {
+            return bad("***intcontent Test FAILED***: This test can only be run locally as it needs access to the SFTP folder.")
+        }
+
+        // Make sure we have access to the SFTP folder
+        if (!Files.isDirectory(Paths.get(options.sftpDir))) {
+            return bad("***intcontent Test FAILED***: The folder ${options.sftpDir} cannot be found.")
+        }
+        val receiverName = hl7Receiver.name
+        ugly("Starting $name Test: send ${simpleRepSender.fullName} data to $receiverName")
+        val file = FileUtilities.createFakeFile(
+            metadata,
+            simpleRepSender,
+            1,
+            receivingStates,
+            receiverName,
+            options.dir,
+            // Use the Chinese locale since the fake data is mainly Chinese characters
+            // https://github.com/DiUS/java-faker/blob/master/src/main/resources/zh-CN.yml
+            locale = Locale("zh_CN")
+        )
+        echo("Created datafile $file")
+        // Now send it to ReportStream.
+        val (responseCode, json) =
+            HttpUtilities.postReportFile(environment, file, org.name, simpleRepSender.name, options.key)
+        echo("Response to POST: $responseCode")
+        echo(json)
+        if (responseCode != HttpURLConnection.HTTP_CREATED) {
+            return bad("***intcontent Test FAILED***:  response code $responseCode")
+        }
+        try {
+            // Read the response
+            val tree = jacksonObjectMapper().readTree(json)
+            val reportId = ReportId.fromString(tree["id"].textValue())
+
+            echo("Id of submitted report: $reportId")
+            waitABit(25, environment)
+            // Go to the database and get the SFTP filename that was sent
+            db = WorkflowEngine().db
+            var asciiOnly = false
+            db.transact { txn ->
+                val filename = sftpFilenameQuery(txn, reportId, receiverName)
+                // If we get a file, test the contents to see if it is all ASCII only.
+                if (filename != null) {
+                    val contents = File(options.sftpDir, filename).inputStream().readBytes().toString(Charsets.UTF_8)
+                    asciiOnly = CharMatcher.ascii().matchesAllOf(contents)
+                }
+            }
+            if (asciiOnly) {
+                return bad("***intcontent Test FAILED***: File contents are only ASCII characters")
+            } else {
+                return good("Test passed: for intcontent")
+            }
+        } catch (e: NullPointerException) {
+            return bad("***intcontent Test FAILED***: Unable to properly parse response json")
+        } catch (e: DataAccessException) {
+            echo(e)
+            return bad("***intcontent Test FAILED***: There was an error fetching data from the database.")
+        }
     }
 }

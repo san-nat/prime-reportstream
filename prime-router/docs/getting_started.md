@@ -25,6 +25,9 @@
     + [Initialize the Vault](#initialize-the-vault)
     + [Re-initialize the Vault](#re-initialize-the-vault)
     + [Using the Vault locally](#using-the-vault-locally)
+  * [Troubleshooting](#troubleshooting)
+    + [prime test Utility](#prime-test-utility)
+      - [Missing env var](#missing-env-var) 
 
 
 ## Developer Workstation Setup
@@ -46,7 +49,7 @@ entering:
     brew install azure-functions-core-tools@3
     ```
 
-3. Install the [Docker Desktop](https://www.docker.com/get-started) or the equivalent. 
+3. Install the [Docker Desktop](https://www.docker.com/get-started) or the equivalent.
 
 #### Windows OS
 Install the following applications in your Windows workstation.  Note that you will require administrator privileges to install them
@@ -70,10 +73,10 @@ brew install postgresql@11
 brew install flyway
 brew services start postgresql@11
 
-Add /usr/local/opt/postgresql@11/bin to your PATH 
+Add /usr/local/opt/postgresql@11/bin to your PATH
 
 # Run createuser.  When prompted set the password as changeIT!
-createuser -P prime 
+createuser -P prime
 createdb --owner=prime prime_data_hub
 ```
 
@@ -113,13 +116,13 @@ docker-compose -f ./docker-prime-infra.yml up --detach
 ```
 
 ## Clone the Repository    
-1. Use your favorite Git tool to clone the [PRIME DATA hub repository](https://github.com/CDCgov/prime-data-hub)
-    - On Git Bash, use the command: 
+1. Use your favorite Git tool to clone the [PRIME ReportStream repository](https://github.com/CDCgov/prime-data-hub)
+    - On Git Bash, use the command:
         ```
         git clone https://github.com/CDCgov/prime-data-hub.git
         ```
     - On other tools, you can clone from the URL https://github.com/CDCgov/prime-data-hub.git
-1. Change the working directory to the `prime-router` directory. 
+1. Change the working directory to the `prime-router` directory.
     ```
     cd <your_path>/prime-router
     ```
@@ -127,11 +130,20 @@ docker-compose -f ./docker-prime-infra.yml up --detach
 
 ## Compiling
 
-Compile the project by running the following command: 
+Compile the project by running the following command:
 
 ```
-mvn clean package
+./gradlew package
 ```
+
+Other gradle tasks you can run are:
+- clean - deletes the build artifacts
+- compile - compile the code
+- test - run the unit tests
+- package - package the build artifacts for deployment
+- primeCLI - run the prime CLI.  Specify arguments with --args='<args>'
+- migrate - load the database with the current schema
+- testEnd2End - run the end to end tests.  Requires the Docker container running
 
 If you see any SSL errors during this step, follow the directions in [Getting Around SSL Errors](#getting-around-ssl-errors).
 
@@ -151,28 +163,28 @@ createdb --owner=prime prime_data_hub
 flyway -user=prime -password=changeIT! -url=jdbc:postgresql://localhost:5432/prime_data_hub -locations=filesystem:./src/main/resources/db/migration migrate
 ```
 
-Use any other tools that you want to develop the code. Be productive. Modify this document if you have a practice that will be useful. 
+Use any other tools that you want to develop the code. Be productive. Modify this document if you have a practice that will be useful.
 
 Some useful tools for Kotlin/Java development include:
 - [KTLint](https://ktlint.github.io/) the Kotlin linter that we use to format our KT code
 - [Microsoft VSCode](https://code.visualstudio.com/Download) with the available Kotlin extension
-- [JetBrains IntelliJ](https://www.jetbrains.com/idea/download/#section=mac) 
+- [JetBrains IntelliJ](https://www.jetbrains.com/idea/download/#section=mac)
 
-If you are using IntelliJ, you can configure it to follow standard Kotlin conventions by
+If you are using IntelliJ, you can install the [IntelliJ KLint plugin](https://plugins.jetbrains.com/plugin/15057-ktlint-unofficial-) or configure it to follow standard Kotlin conventions by
 ```
 cd prime_router
 brew install ktlint
 ktlint applyToIDEAProject
 ```
 
-A useful Azure tool to examine Azurite and Azure storage is (Storage Explorer)[https://azure.microsoft.com/en-us/features/storage-explorer/] from Microsoft. 
+A useful Azure tool to examine Azurite and Azure storage is (Storage Explorer)[https://azure.microsoft.com/en-us/features/storage-explorer/] from Microsoft.
 
 ## Function Development with Docker Compose
 ### Local SFTP Server
-You will need an SFTP server to receive data from the router.  For local tests, refer to the [SFTP-SETUP document](SFTP_SETUP.md) to setup a local SFTP server as a receiver of data.
+You will need an SFTP server to receive data from the router.  For local tests, refer to the [SFTP-SETUP document](SFTP-SETUP.md) to setup a local SFTP server as a receiver of data.
 
 ### Running the Router Locally
-The project's [README](../readme.md) file contains some steps to use the PRIME router in a CLI. However, for the POC app and most other users of the PRIME router will the router in the Microsoft Azure cloud. When hosted in Azure, the PRIME router uses Docker containers. The `DockerFile` describes how to build this container. 
+The project's [README](../readme.md) file contains some steps to use the PRIME router in a CLI. However, for the POC app and most other users of the PRIME router will the router in the Microsoft Azure cloud. When hosted in Azure, the PRIME router uses Docker containers. The `DockerFile` describes how to build this container.
 
 Developers can also run the router locally with the same Azure runtime and libraries to help develop and debug Azure code. In this case, a developer can use a local Azure storage emulator, called Azurite.
 
@@ -180,10 +192,10 @@ To orchestrate running the Azure function code and Azurite, Docker Compose is a 
 ```
 mkdir -p .vault/env
 touch .vault/env/.env.local
-mvn clean package  
+./gradlew package  
 PRIME_ENVIRONMENT=local docker-compose up
 ```
-Docker-compose will build a `prime_dev` container with the output of the `mvn package` command and launch an Azurite container. The first time you run this command, it builds a whole new image, which may take a while. However, after the first time `docker-compose` is run, `docker-compose` should start up in a few seconds. The output should look like:
+Docker-compose will build a `prime_dev` container with the output of the `./gradlew package` command and launch an Azurite container. The first time you run this command, it builds a whole new image, which may take a while. However, after the first time `docker-compose` is run, `docker-compose` should start up in a few seconds. The output should look like:
 
 ![Docker Compose](assets/docker_compose_log.png)
 
@@ -191,12 +203,23 @@ Looking at the log above, you may notice that container has a debug open at port
 
 If you see any SSL errors during this step, follow the directions in [Getting Around SSL Errors](#getting-around-ssl-errors).
 
+## Updating Schema Documentation
+Run the following Gradle command to generate the schema documentation.  The documentation is written to `docs/schema-documentation`
+
+`./gradlew generateDocs`
+
 
 ## Testing
 ### Unit Tests
 Unit tests are run as part of the build.  To run the unit tests, run the following command:
 ```
-mvn test
+./gradlew test
+```
+
+Sometimes you want to force the unit tests to run.   You can do that with the -Pforcetest option, like one of these examples:
+```
+./gradlew test -P forcetest
+./gradlew package -P forcetest
 ```
 
 ### Data Conversion Quick Test
@@ -207,23 +230,36 @@ The quick test is meant to test the data conversion and generation code.  Use th
 
 ### Local End-to-end Tests
 End-to-end tests check if the deployed system is configured correctly.  The test uses an organization called IGNORE for running the tests.  On Windows OS, use Git Bash or similar Linux shell to run these commands.
-1. Refer to the [SFTP-SETUP document](SFTP_SETUP.md) to setup a local SFTP server to receive the resulting data.
-1. Setup the required SFTP credentials for the test organization using the following commands.  Use the username and password assigned to the local SFTP server and change the arguments for the --user and --pass as needed:
-    ```bash 
+1. Perform a one-time setup of the required SFTP credentials for the test organization using the following commands.  Use the username and password assigned to the local SFTP server (default of foo/pass) and change the arguments for the --user and --pass as needed.  Note that running these commands multiple times will not break anything:
+    ```bash
     export $(cat ./.vault/env/.env.local | xargs)
-    ./prime create-credential --type=UserPass --persist=IGNORE--CSV --user foo --pass pass 
-    ./prime create-credential --type=UserPass --persist=IGNORE--HL7 --user foo --pass pass 
-    ./prime create-credential --type=UserPass --persist=IGNORE--HL7-BATCH --user foo --pass pass 
-    ./prime create-credential --type=UserPass --persist=IGNORE--SFTP-LEGACY --user foo --pass pass 
+    ./gradlew primeCLI --args='create-credential --type=UserPass --persist=IGNORE--CSV --user foo --pass pass'
+    ./gradlew primeCLI --args='create-credential --type=UserPass --persist=IGNORE--HL7 --user foo --pass pass'
+    ./gradlew primeCLI --args='create-credential --type=UserPass --persist=IGNORE--HL7-BATCH --user foo --pass pass'
     ```
+1. Run the Prime Router in the Docker container.
 1. To run the test, run the following commands, replacing the value for Postgres URL, user and/or password as needed:
     ```bash
-    export POSTGRES_URL=jdbc:postgresql://localhost:5432/prime_data_hub
-    export POSTGRES_USER=prime
-    export POSTGRES_PASSWORD=changeIT!
-    ./prime test --run end2end
+    ./gradlew testEnd2End
     ```
 1. Verify that all tests are successful.
+
+### Changing the Database Properties
+You can change the default database properties used in the build script by setting the following properties:
+- DB_USER - Postgres database username (defaults to prime)
+- DB_PASSWORD - Postgres database password (defaults to changeIT!)
+- DB_URL - Postgres database URL (defaults to jdbc:postgresql://localhost:5432/prime_data_hub)
+
+In the command line, you can set these properties as follows:
+```bash
+./gradlew testEnd2End -PDB_USER=prime -PDB_PASSWORD=mypassword
+```
+
+Or you can specify these properties via environment variables per the Gradle project properties environment ORG_GRADLE_PROJECT_<property>.  For example:
+```bash
+export ORG_GRADLE_PROJECT_DB_USER=prime
+export ORG_GRADLE_PROJECT_DB_PASSWORD=mypass
+```
 
 ## Using local configuration for organizations.yml
 
@@ -233,19 +269,6 @@ By default, the functions will pull their configuration for organizations from t
 
 If your agency's network intercepts SSL requests, you might have to disable SSL verifications to get around invalid certificate errors.
 
-### Maven Builds
-
-For Maven builds, you can add the parameter `-Dmaven.wagon.http.ssl.insecure=true` as follows:
-
-```bash
-mvn clean package -Dmaven.wagon.http.ssl.insecure=true
-```
-
-If you want to permanently set this, add the following to your `.bash_profile`:
-
-```bash
-export MAVEN_OPTS="-Dmaven.wagon.http.ssl.insecure=true $MAVEN_OPTS"
-```
 
 ### Docker Builds
 
@@ -309,3 +332,42 @@ Alternatively, inject them in your terminal with (useful for using the CLI):
 ```bash
 export $(cat ./.vault/env/.env.local | xargs)
 ```
+
+
+## TroubleShooting
+
+### prime test Utility
+
+The prime-router comes packaged with a executable that can help in finding misconfigurations and other problems with the appliciation.
+
+Use the following command to launch the tool. 
+
+```shell
+cd prime-router
+./prime test
+```
+
+This should be used while the prime-router application is running on your system.
+
+
+
+#### Missing env var
+
+The gradle script is supposed to install a few environment variables that will be used by the prime test utility, however this is currently prone to failure. If a run of `prime test` mentions that any are missing try manually adding them: 
+
+```shell
+POSTGRES_PASSWORD='changeIT!'
+POSTGRES_URL=jdbc:postgresql://localhost:5432/prime_data_hub
+POSTGRES_USER=prime
+```
+
+If on *nix system you can also append these directly on the command to launch `prime test`. For example: 
+
+```shell
+POSTGRES_PASSWORD='changeIT!' \
+POSTGRES_URL=jdbc:postgresql://localhost:5432/prime_data_hub \
+POSTGRES_USER=prime \
+./prime-router/prime test
+```
+
+Running the test command with the correct environment variables should "repair" a running prime-router process in progress. This fix should even persist through subsequent runs.  

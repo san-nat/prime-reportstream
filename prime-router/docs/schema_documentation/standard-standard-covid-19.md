@@ -8,6 +8,8 @@
 
 **Type**: HD
 
+**PII**: No
+
 **HL7 Field**: MSH-3
 
 **Cardinality**: [0..1]
@@ -17,6 +19,8 @@
 **Name**: receiving_application
 
 **Type**: HD
+
+**PII**: No
 
 **HL7 Field**: MSH-5
 
@@ -32,6 +36,8 @@ The receiving application for the message (specified by the receiver)
 
 **Type**: HD
 
+**PII**: No
+
 **HL7 Field**: MSH-6
 
 **Cardinality**: [0..1]
@@ -46,6 +52,8 @@ The receiving facility for the message (specified by the receiver)
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: NTE-3
 
 **Cardinality**: [0..1]
@@ -55,6 +63,8 @@ The receiving facility for the message (specified by the receiver)
 **Name**: comment_type
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: NTE-4
 
@@ -79,6 +89,8 @@ RE|Remark
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: NTE-2
 
 **Cardinality**: [0..1]
@@ -97,7 +109,9 @@ P|Orderer (placer) is source of comment
 
 **Type**: TABLE
 
-**HL7 Field**: OBX-17-1
+**PII**: No
+
+**HL7 Fields**: OBX-17-1, OBX-17-9
 
 **Cardinality**: [0..1]
 
@@ -105,7 +119,7 @@ P|Orderer (placer) is source of comment
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Documentation**:
 
@@ -117,6 +131,8 @@ Device_id is a generated value for the OBX-17 field. It is based on the device m
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBX-17-3
 
 **Cardinality**: [0..1]
@@ -125,7 +141,7 @@ Device_id is a generated value for the OBX-17 field. It is based on the device m
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Documentation**:
 
@@ -137,6 +153,8 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBX-18-1
 
 **Cardinality**: [0..1]
@@ -145,7 +163,7 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Equipment UID
 
@@ -155,6 +173,8 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBX-18-3
 
 **Cardinality**: [0..1]
@@ -163,7 +183,7 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Equipment UID Type
 
@@ -173,13 +193,15 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 
 **Type**: TABLE
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Model
 
@@ -189,13 +211,15 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 
 **Type**: TABLE
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Manufacturer
 
@@ -204,6 +228,8 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 **Name**: file_created_date
 
 **Type**: DATE
+
+**PII**: No
 
 **HL7 Field**: MSH-7
 
@@ -215,6 +241,8 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Fields**: ORC-3-2, OBR-3-2
 
 **Cardinality**: [0..1]
@@ -224,6 +252,8 @@ Device_id_type is a generated value for the OBX-17 field. It is based on the dev
 **Name**: filler_order_id
 
 **Type**: ID
+
+**PII**: No
 
 **HL7 Fields**: ORC-3-1, SPM-2-2, OBR-3-1
 
@@ -239,6 +269,8 @@ Accension number
 
 **Type**: ID_CLIA
 
+**PII**: No
+
 **HL7 Field**: OBR-3-3
 
 **Cardinality**: [0..1]
@@ -248,6 +280,8 @@ Accension number
 **Name**: observation_result_status
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: OBX-11
 
@@ -275,6 +309,8 @@ X|Results cannot be obtained for this observation
 **Name**: order_result_status
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: OBR-25
 
@@ -304,6 +340,8 @@ Z|No record of this patient
 
 **Type**: DATE
 
+**PII**: No
+
 **HL7 Field**: ORC-15
 
 **Cardinality**: [0..1]
@@ -314,11 +352,13 @@ Z|No record of this patient
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBR-4-1
 
 **Cardinality**: [0..1]
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Test Ordered LOINC Code
 
@@ -328,11 +368,13 @@ Z|No record of this patient
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBR-4-2
 
 **Cardinality**: [0..1]
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Test Ordered LOINC Long Name
 
@@ -341,6 +383,8 @@ Z|No record of this patient
 **Name**: ordering_facility_city
 
 **Type**: CITY
+
+**PII**: No
 
 **HL7 Field**: ORC-22-3
 
@@ -356,6 +400,8 @@ The city of the facility which the test was ordered from
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: ORC-22-9
 
 **Cardinality**: [0..1]
@@ -370,6 +416,8 @@ The city of the facility which the test was ordered from
 
 **Type**: EMAIL
 
+**PII**: No
+
 **HL7 Field**: ORC-23-4
 
 **Cardinality**: [0..1]
@@ -379,6 +427,8 @@ The city of the facility which the test was ordered from
 **Name**: ordering_facility_name
 
 **Type**: TEXT
+
+**PII**: No
 
 **HL7 Field**: ORC-21-1
 
@@ -394,9 +444,11 @@ The name of the facility which the test was ordered from
 
 **Type**: TELEPHONE
 
+**PII**: No
+
 **HL7 Field**: ORC-23
 
-**Cardinality**: [1..1]
+**Cardinality**: [0..1]
 
 **Documentation**:
 
@@ -407,6 +459,8 @@ The phone number of the facility which the test was ordered from
 **Name**: ordering_facility_state
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: ORC-22-4
 
@@ -426,6 +480,8 @@ The state of the facility which the test was ordered from
 
 **Type**: STREET
 
+**PII**: No
+
 **HL7 Field**: ORC-22-1
 
 **Cardinality**: [0..1]
@@ -439,6 +495,8 @@ The address of the facility which the test was ordered from
 **Name**: ordering_facility_street2
 
 **Type**: STREET_OR_BLANK
+
+**PII**: No
 
 **HL7 Field**: ORC-22-2
 
@@ -454,6 +512,8 @@ The secondary address of the facility which the test was ordered from
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: ORC-22-5
 
 **Cardinality**: [0..1]
@@ -467,6 +527,8 @@ The zip code of the facility which the test was ordered from
 **Name**: ordering_provider_city
 
 **Type**: CITY
+
+**PII**: Yes
 
 **HL7 Field**: ORC-24-3
 
@@ -482,6 +544,8 @@ The city of the provider
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: ORC-24-9
 
 **Cardinality**: [0..1]
@@ -495,6 +559,8 @@ The city of the provider
 **Name**: ordering_provider_first_name
 
 **Type**: PERSON_NAME
+
+**PII**: No
 
 **HL7 Fields**: ORC-12-3, OBR-16-3
 
@@ -510,6 +576,8 @@ The first name of the provider who ordered the test
 
 **Type**: ID_NPI
 
+**PII**: No
+
 **HL7 Fields**: ORC-12-1, OBR-16-1
 
 **Cardinality**: [0..1]
@@ -523,6 +591,8 @@ The ordering provider’s National Provider Identifier
 **Name**: ordering_provider_id_authority
 
 **Type**: HD
+
+**PII**: No
 
 **HL7 Fields**: ORC-12-9, OBR-16-9
 
@@ -538,6 +608,8 @@ Usually the OID for CMS
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Fields**: ORC-12-13, OBR-16-13
 
 **Cardinality**: [0..1]
@@ -551,6 +623,8 @@ Usually NPI
 **Name**: ordering_provider_last_name
 
 **Type**: PERSON_NAME
+
+**PII**: No
 
 **HL7 Fields**: ORC-12-2, OBR-16-2
 
@@ -566,6 +640,8 @@ The last name of provider who ordered the test
 
 **Type**: PERSON_NAME
 
+**PII**: No
+
 **HL7 Fields**: ORC-12-4, OBR-16-4
 
 **Cardinality**: [0..1]
@@ -575,6 +651,8 @@ The last name of provider who ordered the test
 **Name**: ordering_provider_phone_number
 
 **Type**: TELEPHONE
+
+**PII**: Yes
 
 **HL7 Fields**: ORC-14, OBR-17
 
@@ -589,6 +667,8 @@ The phone number of the provider
 **Name**: ordering_provider_state
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: ORC-24-4
 
@@ -608,6 +688,8 @@ The state of the provider
 
 **Type**: STREET
 
+**PII**: Yes
+
 **HL7 Field**: ORC-24-1
 
 **Cardinality**: [0..1]
@@ -621,6 +703,8 @@ The street address of the provider
 **Name**: ordering_provider_street2
 
 **Type**: STREET_OR_BLANK
+
+**PII**: Yes
 
 **HL7 Field**: ORC-24-2
 
@@ -636,6 +720,8 @@ The street second address of the provider
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: ORC-24-5
 
 **Cardinality**: [0..1]
@@ -649,6 +735,8 @@ The zip code of the provider
 **Name**: patient_city
 
 **Type**: CITY
+
+**PII**: Yes
 
 **HL7 Field**: PID-11-3
 
@@ -664,6 +752,8 @@ The patient's city
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: PID-11-9
 
 **Cardinality**: [0..1]
@@ -678,6 +768,8 @@ The patient's city
 
 **Type**: EMAIL
 
+**PII**: Yes
+
 **HL7 Field**: PID-13-4
 
 **Cardinality**: [0..1]
@@ -688,6 +780,8 @@ The patient's city
 
 **Type**: DATE
 
+**PII**: Yes
+
 **HL7 Field**: PID-29
 
 **Cardinality**: [0..1]
@@ -697,6 +791,8 @@ The patient's city
 **Name**: patient_died
 
 **Type**: CODE
+
+**PII**: Yes
 
 **HL7 Field**: PID-30-1
 
@@ -716,6 +812,8 @@ UNK|Unknown
 
 **Type**: DATE
 
+**PII**: Yes
+
 **HL7 Field**: PID-7
 
 **Cardinality**: [0..1]
@@ -733,6 +831,8 @@ Other states may choose to define their own formats.
 
 **Type**: ID_DLN
 
+**PII**: Yes
+
 **HL7 Field**: PID-20-1
 
 **Cardinality**: [0..1]
@@ -742,6 +842,8 @@ Other states may choose to define their own formats.
 **Name**: patient_ethnicity
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: PID-22
 
@@ -767,6 +869,8 @@ consumers are free to define their own values. Please refer to the consumer-spec
 
 **Type**: PERSON_NAME
 
+**PII**: Yes
+
 **HL7 Field**: PID-5-2
 
 **Cardinality**: [0..1]
@@ -780,6 +884,8 @@ The patient's first name
 **Name**: patient_gender
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: PID-8-1
 
@@ -807,6 +913,8 @@ The patient's gender. There is a valueset defined based on the values in PID-8-1
 
 **Type**: TEXT
 
+**PII**: Yes
+
 **HL7 Field**: PID-3-1
 
 **Cardinality**: [0..1]
@@ -816,6 +924,8 @@ The patient's gender. There is a valueset defined based on the values in PID-8-1
 **Name**: patient_id_assigner
 
 **Type**: HD
+
+**PII**: No
 
 **HL7 Fields**: PID-3-6-2
 
@@ -827,6 +937,8 @@ The patient's gender. There is a valueset defined based on the values in PID-8-1
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: PID-3-5
 
 **Cardinality**: [0..1]
@@ -836,6 +948,8 @@ The patient's gender. There is a valueset defined based on the values in PID-8-1
 **Name**: patient_last_name
 
 **Type**: PERSON_NAME
+
+**PII**: Yes
 
 **HL7 Field**: PID-5-1
 
@@ -851,6 +965,8 @@ The patient's last name
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: PID-5-7
 
 **Cardinality**: [0..1]
@@ -861,6 +977,8 @@ The patient's last name
 
 **Type**: PERSON_NAME
 
+**PII**: Yes
+
 **HL7 Field**: PID-5-3
 
 **Cardinality**: [0..1]
@@ -870,6 +988,8 @@ The patient's last name
 **Name**: patient_phone_number
 
 **Type**: TELEPHONE
+
+**PII**: Yes
 
 **HL7 Field**: PID-13
 
@@ -884,6 +1004,8 @@ The patient's phone number with area code
 **Name**: patient_race
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: PID-10
 
@@ -913,6 +1035,8 @@ The patient's race. There is a common valueset defined for race values, but some
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: PID-11-4
 
 **Cardinality**: [1..1]
@@ -931,6 +1055,8 @@ The patient's state
 
 **Type**: STREET
 
+**PII**: Yes
+
 **HL7 Field**: PID-11-1
 
 **Cardinality**: [0..1]
@@ -944,6 +1070,8 @@ The patient's street address
 **Name**: patient_street2
 
 **Type**: STREET_OR_BLANK
+
+**PII**: Yes
 
 **HL7 Field**: PID-11-2
 
@@ -959,6 +1087,8 @@ The patient's second address line
 
 **Type**: PERSON_NAME
 
+**PII**: Yes
+
 **HL7 Field**: PID-5-4
 
 **Cardinality**: [0..1]
@@ -968,6 +1098,8 @@ The patient's second address line
 **Name**: patient_tribal_citizenship
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: PID-39
 
@@ -1550,6 +1682,8 @@ Code | Display
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: PID-11-5
 
 **Cardinality**: [0..1]
@@ -1564,6 +1698,8 @@ The patient's zip code
 
 **Type**: ID
 
+**PII**: No
+
 **HL7 Fields**: ORC-2-1, OBR-2-1
 
 **Cardinality**: [0..1]
@@ -1573,6 +1709,8 @@ The patient's zip code
 **Name**: placer_name
 
 **Type**: TEXT
+
+**PII**: No
 
 **HL7 Fields**: ORC-2-2, ORC-4-2, OBR-2-2
 
@@ -1584,6 +1722,8 @@ The patient's zip code
 
 **Type**: ID_CLIA
 
+**PII**: No
+
 **HL7 Fields**: ORC-2-3, ORC-4-3, OBR-2-3
 
 **Cardinality**: [0..1]
@@ -1594,6 +1734,8 @@ The patient's zip code
 
 **Type**: ID
 
+**PII**: No
+
 **HL7 Field**: ORC-4-1
 
 **Cardinality**: [0..1]
@@ -1603,6 +1745,8 @@ The patient's zip code
 **Name**: processing_mode_code
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: MSH-11-1
 
@@ -1626,6 +1770,8 @@ P, D, or T for Production, Debugging, or Training
 
 **Type**: ID
 
+**PII**: No
+
 **HL7 Field**: MSH-10
 
 **Cardinality**: [1..1]
@@ -1639,6 +1785,8 @@ unique id to track the usage of the message
 **Name**: message_profile_id
 
 **Type**: EI
+
+**PII**: No
 
 **HL7 Field**: MSH-21
 
@@ -1654,6 +1802,8 @@ The message profile identifer
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: OBX-7
 
 **Cardinality**: [0..1]
@@ -1667,6 +1817,8 @@ The reference range of the lab result, such as “Negative” or “Normal”. F
 **Name**: abnormal_flag
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: OBX-8
 
@@ -1717,7 +1869,9 @@ This field is generated based on the normalcy status of the result. A = abnormal
 
 **Type**: TEXT
 
-**HL7 Field**: MSH-4-1
+**PII**: No
+
+**HL7 Fields**: MSH-4-1, PID-3-4-1
 
 **Cardinality**: [0..1]
 
@@ -1730,6 +1884,8 @@ The reporting facility's name
 **Name**: reporting_facility_clia
 
 **Type**: ID_CLIA
+
+**PII**: No
 
 **HL7 Fields**: MSH-4-2, SPM-2-1-3, SPM-2-2-3, PID-3-4-2, PID-3-6-2
 
@@ -1745,6 +1901,8 @@ The reporting facility's CLIA
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: OBX-2
 
 **Cardinality**: [0..1]
@@ -1754,6 +1912,8 @@ The reporting facility's CLIA
 **Name**: specimen_collection_date_time
 
 **Type**: DATETIME
+
+**PII**: No
 
 **HL7 Fields**: SPM-17-1, OBR-7, OBR-8, OBX-14
 
@@ -1769,6 +1929,8 @@ The date which the specimen was collected. The default format is yyyyMMddHHmmssz
 **Name**: specimen_collection_method
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: SPM-7
 
@@ -1827,6 +1989,8 @@ WOOD|Swab, Wooden Shaft
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: SPM-10
 
 **Cardinality**: [0..1]
@@ -1841,6 +2005,8 @@ WOOD|Swab, Wooden Shaft
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: SPM-14
 
 **Cardinality**: [0..1]
@@ -1854,6 +2020,8 @@ WOOD|Swab, Wooden Shaft
 **Name**: specimen_id
 
 **Type**: EI
+
+**PII**: No
 
 **HL7 Fields**: SPM-2
 
@@ -1872,6 +2040,8 @@ A unique code for this specimen
 **Name**: specimen_role
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: SPM-11
 
@@ -1898,6 +2068,8 @@ V|Verifying collaborator
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: SPM-8
 
 **Cardinality**: [0..1]
@@ -1909,12 +2081,15 @@ Code | Display
 119297000|Blood specimen (specimen)
 71836000|Nasopharyngeal structure (body structure)
 45206002|Nasal structure (body structure)
+53342003|Internal nose structure (body structure)
 
 ---
 
 **Name**: specimen_type
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: SPM-4
 
@@ -1950,11 +2125,13 @@ The specimen source, such as Blood or Serum
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBX-3-1
 
 **Cardinality**: [0..1]
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Test Performed LOINC Code
 
@@ -1968,11 +2145,13 @@ The LOINC code of the test performed. This is a standardized coded value describ
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBX-3-2
 
 **Cardinality**: [0..1]
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Test Performed LOINC Long Name
 
@@ -1986,6 +2165,8 @@ The LOINC description of the test performed as related to the LOINC code.
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: OBX-3-3
 
 **Cardinality**: [0..1]
@@ -1995,6 +2176,8 @@ The LOINC description of the test performed as related to the LOINC code.
 **Name**: test_result
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: OBX-5
 
@@ -2015,13 +2198,14 @@ Code | Display
 419984006|Inconclusive
 125154007|Specimen unsatisfactory for evaluation
 455371000124106|Invalid result
-840539006|Disease caused by sever acute respitory syndrome coronavirus 2 (disorder)
+840539006|Disease caused by sever acute respiratory syndrome coronavirus 2 (disorder)
 840544004|Suspected disease caused by severe acute respiratory coronavirus 2 (situation)
 840546002|Exposure to severe acute respiratory syndrome coronavirus 2 (event)
 840533007|Severe acute respiratory syndrome coronavirus 2 (organism)
 840536004|Antigen of severe acute respiratory syndrome coronavirus 2 (substance)
 840535000|Antibody to severe acute respiratory syndrome coronavirus 2 (substance)
 840534001|Severe acute respiratory syndrome coronavirus 2 vaccination (procedure)
+373121007|Test not done
 
 **Documentation**:
 
@@ -2033,6 +2217,8 @@ The result of the test performed. For IgG, IgM and CT results that give a numeri
 
 **Type**: DATETIME
 
+**PII**: No
+
 **HL7 Field**: OBX-19
 
 **Cardinality**: [0..1]
@@ -2043,6 +2229,8 @@ The result of the test performed. For IgG, IgM and CT results that give a numeri
 
 **Type**: DATETIME
 
+**PII**: No
+
 **HL7 Field**: OBX-22
 
 **Cardinality**: [0..1]
@@ -2052,6 +2240,8 @@ The result of the test performed. For IgG, IgM and CT results that give a numeri
 **Name**: test_result_status
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Fields**: OBX-11-1, OBR-25-1
 
@@ -2081,6 +2271,8 @@ Z|No record of this patient
 
 **Type**: ID
 
+**PII**: No
+
 **HL7 Field**: OBX-4
 
 **Cardinality**: [0..1]
@@ -2091,6 +2283,8 @@ Z|No record of this patient
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: OBX-6
 
 **Cardinality**: [0..1]
@@ -2100,6 +2294,8 @@ Z|No record of this patient
 **Name**: testing_lab_accession_number
 
 **Type**: ID
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2113,6 +2309,8 @@ The accession number of the specimen collected
 
 **Type**: CITY
 
+**PII**: No
+
 **HL7 Field**: OBX-24-3
 
 **Cardinality**: [0..1]
@@ -2122,6 +2320,8 @@ The accession number of the specimen collected
 **Name**: testing_lab_county_code
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: OBX-24-9
 
@@ -2137,6 +2337,8 @@ The accession number of the specimen collected
 
 **Type**: ID
 
+**PII**: No
+
 **HL7 Field**: OBX-23-10
 
 **Cardinality**: [0..1]
@@ -2147,6 +2349,8 @@ The accession number of the specimen collected
 
 **Type**: HD
 
+**PII**: No
+
 **HL7 Field**: OBX-23-6
 
 **Cardinality**: [0..1]
@@ -2156,6 +2360,8 @@ The accession number of the specimen collected
 **Name**: testing_lab_clia
 
 **Type**: ID_CLIA
+
+**PII**: No
 
 **HL7 Fields**: OBX-15-1, OBX-23-10, ORC-3-3, OBR-3-3, OBR-2-3, ORC-2-3
 
@@ -2174,7 +2380,9 @@ An example of the ID is 03D2159846
 
 **Type**: TEXT
 
-**HL7 Fields**: ORC-2-2, OBR-2-2, ORC-3-2, OBR-3-2
+**PII**: No
+
+**HL7 Fields**: ORC-2-2, OBR-2-2, ORC-3-2, OBR-3-2, OBX-23-1, PID-3-4-1
 
 **Cardinality**: [0..1]
 
@@ -2187,6 +2395,8 @@ The name of the laboratory which performed the test, can be the same as the send
 **Name**: testing_lab_specimen_id
 
 **Type**: ID
+
+**PII**: No
 
 **HL7 Field**: SPM-2-1
 
@@ -2202,6 +2412,8 @@ The specimen-id from the testing lab
 
 **Type**: DATETIME
 
+**PII**: No
+
 **HL7 Field**: SPM-18-1
 
 **Cardinality**: [0..1]
@@ -2211,6 +2423,8 @@ The specimen-id from the testing lab
 **Name**: testing_lab_state
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: OBX-24-4
 
@@ -2226,6 +2440,8 @@ The specimen-id from the testing lab
 
 **Type**: STREET
 
+**PII**: No
+
 **HL7 Field**: OBX-24-1
 
 **Cardinality**: [0..1]
@@ -2235,6 +2451,8 @@ The specimen-id from the testing lab
 **Name**: testing_lab_street2
 
 **Type**: STREET_OR_BLANK
+
+**PII**: No
 
 **HL7 Field**: OBX-24-2
 
@@ -2246,6 +2464,8 @@ The specimen-id from the testing lab
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: OBX-24-5
 
 **Cardinality**: [0..1]
@@ -2256,6 +2476,8 @@ The specimen-id from the testing lab
 
 **Type**: TELEPHONE
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2263,6 +2485,8 @@ The specimen-id from the testing lab
 **Name**: pregnant
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: AOE
 
@@ -2288,6 +2512,8 @@ Is the patient pregnant?
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: AOE
 
 **LOINC Code**: 95418-0
@@ -2311,6 +2537,8 @@ Is the patient employed in health care?
 **Name**: first_test
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: AOE
 
@@ -2336,6 +2564,8 @@ Is this the patient's first test for this condition?
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: AOE
 
 **LOINC Code**: 77974-4
@@ -2359,6 +2589,8 @@ Is the patient hospitalized?
 **Name**: icu
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: AOE
 
@@ -2384,6 +2616,8 @@ Is the patient in the ICU?
 
 **Type**: DATE
 
+**PII**: No
+
 **HL7 Field**: AOE
 
 **LOINC Code**: 65222-2
@@ -2396,6 +2630,8 @@ Is the patient in the ICU?
 
 **Type**: NUMBER
 
+**PII**: No
+
 **HL7 Field**: AOE
 
 **LOINC Code**: 30525-0
@@ -2407,6 +2643,8 @@ Is the patient in the ICU?
 **Name**: patient_age_units
 
 **Type**: CODE
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2430,6 +2668,8 @@ Always filled when `patient_age` is filled
 **Name**: resident_congregate_setting
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: AOE
 
@@ -2455,6 +2695,8 @@ Does the patient reside in a congregate care setting?
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: AOE
 
 **LOINC Code**: 95419-8
@@ -2479,6 +2721,8 @@ Is the patient symptomatic?
 
 **Type**: DATETIME
 
+**PII**: No
+
 **HL7 Field**: OBR-22
 
 **Cardinality**: [0..1]
@@ -2488,6 +2732,8 @@ Is the patient symptomatic?
 **Name**: employed_in_high_risk_setting
 
 **Type**: CODE
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2505,6 +2751,8 @@ UNK|Unknown
 
 **Type**: ID
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2512,6 +2760,8 @@ UNK|Unknown
 **Name**: flatfile_version_no
 
 **Type**: NUMBER
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2521,6 +2771,8 @@ UNK|Unknown
 
 **Type**: TEXT
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2528,6 +2780,8 @@ UNK|Unknown
 **Name**: ordered_test_system_abbr
 
 **Type**: TEXT
+
+**PII**: No
 
 **HL7 Field**: OBR-4-3
 
@@ -2539,11 +2793,13 @@ UNK|Unknown
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBR-4-7
 
 **Cardinality**: [0..1]
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: LOINC Version ID
 
@@ -2552,6 +2808,8 @@ UNK|Unknown
 **Name**: ordering_facility_county
 
 **Type**: TABLE
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2565,6 +2823,8 @@ UNK|Unknown
 
 **Type**: TEXT
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2572,6 +2832,8 @@ UNK|Unknown
 **Name**: ordering_provider_county
 
 **Type**: TABLE
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2585,6 +2847,8 @@ UNK|Unknown
 
 **Type**: TEXT
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2592,6 +2856,8 @@ UNK|Unknown
 **Name**: ordering_provider_middle_initial
 
 **Type**: PERSON_NAME
+
+**PII**: No
 
 **HL7 Fields**: ORC-12-4, OBR-16-4
 
@@ -2602,6 +2868,8 @@ UNK|Unknown
 **Name**: patient_county
 
 **Type**: TABLE_OR_BLANK
+
+**PII**: No
 
 **Cardinality**: [1..1]
 
@@ -2615,6 +2883,10 @@ UNK|Unknown
 
 **Type**: TEXT
 
+**PII**: No
+
+**HL7 Field**: PID-11-6
+
 **Cardinality**: [0..1]
 
 ---
@@ -2622,6 +2894,8 @@ UNK|Unknown
 **Name**: patient_middle_initial
 
 **Type**: PERSON_NAME
+
+**PII**: Yes
 
 **HL7 Field**: PID-5-3
 
@@ -2633,6 +2907,8 @@ UNK|Unknown
 
 **Type**: ID
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2641,6 +2917,8 @@ UNK|Unknown
 
 **Type**: HD
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2648,6 +2926,8 @@ UNK|Unknown
 **Name**: previous_message_id
 
 **Type**: ID
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2661,6 +2941,8 @@ pointer/link to the unique id of a previously submitted result.  Usually blank. 
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: OBR-31
 
 **Cardinality**: [0..1]
@@ -2670,6 +2952,8 @@ pointer/link to the unique id of a previously submitted result.  Usually blank. 
 **Name**: reporting_facility
 
 **Type**: HD
+
+**PII**: No
 
 **HL7 Field**: MSH-4
 
@@ -2683,9 +2967,77 @@ aggregator
 
 ---
 
+**Name**: test_authorized_for_otc
+
+**Type**: TABLE
+
+**PII**: No
+
+**Cardinality**: [0..1]
+
+
+**Reference URL**:
+[https://www.fda.gov/news-events/fda-newsroom/press-announcements](https://www.fda.gov/news-events/fda-newsroom/press-announcements) 
+
+**Table**: LIVD-Supplemental-2021-06-07
+
+**Table Column**: is_otc
+
+**Documentation**:
+
+Is the test authorized for over-the-counter purchase by the FDA (Y, N, UNK)
+
+---
+
+**Name**: test_authorized_for_home
+
+**Type**: TABLE
+
+**PII**: No
+
+**Cardinality**: [0..1]
+
+
+**Reference URL**:
+[https://www.fda.gov/news-events/fda-newsroom/press-announcements](https://www.fda.gov/news-events/fda-newsroom/press-announcements) 
+
+**Table**: LIVD-Supplemental-2021-06-07
+
+**Table Column**: is_home
+
+**Documentation**:
+
+Is the test authorized for home use by the FDA (Y, N, UNK)
+
+---
+
+**Name**: test_authorized_for_unproctored
+
+**Type**: TABLE
+
+**PII**: No
+
+**Cardinality**: [0..1]
+
+
+**Reference URL**:
+[https://www.fda.gov/news-events/fda-newsroom/press-announcements](https://www.fda.gov/news-events/fda-newsroom/press-announcements) 
+
+**Table**: LIVD-Supplemental-2021-06-07
+
+**Table Column**: is_unproctored
+
+**Documentation**:
+
+Is the test authorized for unproctored administration by the FDA (Y, N, UNK)
+
+---
+
 **Name**: test_kit_name_id
 
 **Type**: TABLE
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2693,7 +3045,7 @@ aggregator
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Testkit Name ID
 
@@ -2703,13 +3055,15 @@ aggregator
 
 **Type**: TABLE
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 
 **Reference URL**:
 [https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification](https://confluence.hl7.org/display/OO/Proposed+HHS+ELR+Submission+Guidance+using+HL7+v2+Messages#ProposedHHSELRSubmissionGuidanceusingHL7v2Messages-DeviceIdentification) 
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: Testkit Name ID Type
 
@@ -2719,11 +3073,13 @@ aggregator
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBX-17-7
 
 **Cardinality**: [0..1]
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: LOINC Version ID
 
@@ -2733,6 +3089,8 @@ aggregator
 
 **Type**: TEXT
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2740,6 +3098,8 @@ aggregator
 **Name**: test_performed_system
 
 **Type**: TEXT
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2749,11 +3109,13 @@ aggregator
 
 **Type**: TABLE
 
+**PII**: No
+
 **HL7 Field**: OBX-3-7
 
 **Cardinality**: [0..1]
 
-**Table**: LIVD-SARS-CoV-2-2021-01-20
+**Table**: LIVD-SARS-CoV-2-2021-04-28
 
 **Table Column**: LOINC Version ID
 
@@ -2762,6 +3124,8 @@ aggregator
 **Name**: testing_lab_county
 
 **Type**: TABLE
+
+**PII**: No
 
 **Cardinality**: [0..1]
 
@@ -2775,6 +3139,8 @@ aggregator
 
 **Type**: TEXT
 
+**PII**: No
+
 **Cardinality**: [0..1]
 
 ---
@@ -2782,6 +3148,8 @@ aggregator
 **Name**: value_type
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: OBX-2
 
@@ -2816,5 +3184,19 @@ XCN|Extended Composite Name and Number For Persons
 XON|Extended Composite Name and Number For Organizations
 XPN|Extended Person Name
 XTN|Extended Telecommunications Number
+
+---
+
+**Name**: sender_id
+
+**Type**: TEXT
+
+**PII**: No
+
+**Cardinality**: [0..1]
+
+**Documentation**:
+
+ID name of org that is sending this data to ReportStream.  Suitable for provenance or chain of custody tracking.  Not to be confused with sending_application, in which ReportStream acts as the 'sender' to the downstream jurisdiction.
 
 ---

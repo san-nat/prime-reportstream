@@ -20,7 +20,8 @@ open class Sender(
     val fullName: String get() = "$organizationName$fullNameSeparator$name"
 
     enum class Format(val mimeType: String) {
-        CSV("text/csv")
+        CSV("text/csv"),
+        HL7("application/hl7-v2"),
     }
 
     /**

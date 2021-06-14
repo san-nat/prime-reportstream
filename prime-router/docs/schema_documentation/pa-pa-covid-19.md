@@ -8,6 +8,8 @@
 
 **Type**: PERSON_NAME
 
+**PII**: Yes
+
 **HL7 Field**: PID-5-2
 
 **Cardinality**: [0..1]
@@ -22,6 +24,8 @@ The patient's first name
 
 **Type**: PERSON_NAME
 
+**PII**: Yes
+
 **HL7 Field**: PID-5-3
 
 **Cardinality**: [0..1]
@@ -31,6 +35,8 @@ The patient's first name
 **Name**: PatientLastName
 
 **Type**: PERSON_NAME
+
+**PII**: Yes
 
 **HL7 Field**: PID-5-1
 
@@ -46,6 +52,8 @@ The patient's last name
 
 **Type**: PERSON_NAME
 
+**PII**: Yes
+
 **HL7 Field**: PID-5-4
 
 **Cardinality**: [0..1]
@@ -55,6 +63,8 @@ The patient's last name
 **Name**: PatientDOB
 
 **Type**: DATE
+
+**PII**: Yes
 
 **HL7 Field**: PID-7
 
@@ -73,6 +83,8 @@ Other states may choose to define their own formats.
 
 **Type**: STREET
 
+**PII**: Yes
+
 **HL7 Field**: PID-11-1
 
 **Cardinality**: [0..1]
@@ -87,6 +99,8 @@ The patient's street address
 
 **Type**: CITY
 
+**PII**: Yes
+
 **HL7 Field**: PID-11-3
 
 **Cardinality**: [0..1]
@@ -100,6 +114,8 @@ The patient's city
 **Name**: PatientState
 
 **Type**: TABLE
+
+**PII**: No
 
 **HL7 Field**: PID-11-4
 
@@ -119,6 +135,8 @@ The patient's state
 
 **Type**: POSTAL_CODE
 
+**PII**: No
+
 **HL7 Field**: PID-11-5
 
 **Cardinality**: [0..1]
@@ -133,6 +151,8 @@ The patient's zip code
 
 **Type**: TELEPHONE
 
+**PII**: Yes
+
 **HL7 Field**: PID-13
 
 **Cardinality**: [0..1]
@@ -146,6 +166,8 @@ The patient's phone number with area code
 **Name**: PatientGender
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: PID-8-1
 
@@ -172,6 +194,8 @@ The patient's gender. There is a valueset defined based on the values in PID-8-1
 **Name**: PatientRace
 
 **Type**: CODE
+
+**PII**: No
 
 **HL7 Field**: PID-10
 
@@ -201,6 +225,8 @@ The patient's race. There is a common valueset defined for race values, but some
 
 **Type**: CODE
 
+**PII**: No
+
 **HL7 Field**: PID-22
 
 **Cardinality**: [0..1]
@@ -225,6 +251,8 @@ consumers are free to define their own values. Please refer to the consumer-spec
 
 **Type**: ID
 
+**PII**: No
+
 **HL7 Field**: SPM-2-1
 
 **Cardinality**: [0..1]
@@ -238,6 +266,8 @@ The specimen-id from the testing lab
 **Name**: SpecimenCollectedDate
 
 **Type**: DATETIME
+
+**PII**: No
 
 **HL7 Fields**: SPM-17-1, OBR-7, OBR-8, OBX-14
 
@@ -254,6 +284,8 @@ The date which the specimen was collected. The default format is yyyyMMddHHmmssz
 
 **Type**: CODE
 
+**PII**: No
+
 **Format**: $display
 
 **HL7 Field**: SPM-8
@@ -267,12 +299,15 @@ Code | Display
 119297000|Blood specimen (specimen)
 71836000|Nasopharyngeal structure (body structure)
 45206002|Nasal structure (body structure)
+53342003|Internal nose structure (body structure)
 
 ---
 
 **Name**: TestName
 
 **Type**: CODE
+
+**PII**: No
 
 **Format**: $display
 
@@ -310,6 +345,8 @@ The specimen source, such as Blood or Serum
 
 **Type**: CODE
 
+**PII**: No
+
 **Format**: $display
 
 **HL7 Field**: OBX-5
@@ -331,13 +368,14 @@ Code | Display
 419984006|Inconclusive
 125154007|Specimen unsatisfactory for evaluation
 455371000124106|Invalid result
-840539006|Disease caused by sever acute respitory syndrome coronavirus 2 (disorder)
+840539006|Disease caused by sever acute respiratory syndrome coronavirus 2 (disorder)
 840544004|Suspected disease caused by severe acute respiratory coronavirus 2 (situation)
 840546002|Exposure to severe acute respiratory syndrome coronavirus 2 (event)
 840533007|Severe acute respiratory syndrome coronavirus 2 (organism)
 840536004|Antigen of severe acute respiratory syndrome coronavirus 2 (substance)
 840535000|Antibody to severe acute respiratory syndrome coronavirus 2 (substance)
 840534001|Severe acute respiratory syndrome coronavirus 2 vaccination (procedure)
+373121007|Test not done
 
 **Documentation**:
 
@@ -349,6 +387,8 @@ The result of the test performed. For IgG, IgM and CT results that give a numeri
 
 **Type**: TEXT
 
+**PII**: No
+
 **HL7 Field**: NTE-3
 
 **Cardinality**: [0..1]
@@ -358,6 +398,8 @@ The result of the test performed. For IgG, IgM and CT results that give a numeri
 **Name**: PerformingFacilityName
 
 **Type**: TEXT
+
+**PII**: No
 
 **HL7 Field**: ORC-21-1
 
