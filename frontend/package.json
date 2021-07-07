@@ -6,7 +6,7 @@
     "chart.js": "^3.2",
     "cypress": "^7.5.0",
     "moment": "^2.29.1",
-    "http-proxy-middleware": "^2.0.0"
+    "http-proxy-middleware": "^2.0.1"
   },
   "devDependencies": {
     "@11ty/eleventy": "^0.12.1",
