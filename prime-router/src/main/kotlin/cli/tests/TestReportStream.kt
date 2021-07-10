@@ -246,7 +246,9 @@ Examples:
             InternationalContent(),
             Hl7Ingest(),
             DataCompareTest(),
-            SantaClaus()
+            SantaClaus(),
+            BadHl7(),
+            Hl7Check()
         )
     }
 }
