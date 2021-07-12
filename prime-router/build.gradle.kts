@@ -207,11 +207,15 @@ tasks.register<JavaExec>("primeCLI") {
     main = primeMainClass
     classpath = sourceSets["main"].runtimeClasspath
     // Default arguments is to display the help
-    args = listOf("-h")
     environment["POSTGRES_URL"] = dbUrl
     environment["POSTGRES_USER"] = dbUser
     environment["POSTGRES_PASSWORD"] = dbPassword
-    doFirst {
+
+    // Use arguments passed by another task in the project.extra["cliArgs"] property.
+    if (project.extra.has("cliArgs")) {
+        args = project.extra["cliArgs"] as MutableList<String>
+    } else {
+        args = listOf("-h")
         println("primeCLI Gradle task usage: gradle primeCLI --args='<args>'")
         println(
             "Usage example: gradle primeCLI --args=\"data --input-fake 50 " +
@@ -221,21 +225,25 @@ tasks.register<JavaExec>("primeCLI") {
     }
 }
 
-tasks.register<JavaExec>("testEnd2End") {
+tasks.register("testSmoke") {
     group = rootProject.description ?: ""
-    description = "Run the end to end tests.  Requires running a Docker instance"
-    main = primeMainClass
-    classpath = sourceSets["main"].runtimeClasspath
-    args = listOf("test", "--run", "end2end")
-    environment = mapOf("POSTGRES_URL" to dbUrl, "POSTGRES_USER" to dbUser, "POSTGRES_PASSWORD" to dbPassword)
+    description = "Run the smoke tests"
+    project.extra["cliArgs"] = listOf("test")
+    finalizedBy("primeCLI")
 }
 
-tasks.register<JavaExec>("generateDocs") {
+tasks.register("testEnd2End") {
+    group = rootProject.description ?: ""
+    description = "Run the end to end tests.  Requires running a Docker instance"
+    project.extra["cliArgs"] = listOf("test", "--run", "end2end")
+    finalizedBy("primeCLI")
+}
+
+tasks.register("generateDocs") {
     group = rootProject.description ?: ""
     description = "Generate the schema documentation in markup format"
-    main = primeMainClass
-    classpath = sourceSets["main"].runtimeClasspath
-    args = listOf("generate-docs")
+    project.extra["cliArgs"] = listOf("generate-docs")
+    finalizedBy("primeCLI")
 }
 
 tasks.azureFunctionsPackage {
@@ -449,7 +457,7 @@ dependencies {
         exclude(group = "com.github.kittinunf.fuel", module = "fuel")
     }
     // kotlinx-coroutines-core is needed by mock-fuel
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-native-mt")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1-native-mt")
     testImplementation("com.github.KennethWussmann:mock-fuel:1.3.0")
     testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
