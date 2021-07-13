@@ -8,13 +8,20 @@ import gov.cdc.prime.router.azure.ReportStreamEnv
 import gov.cdc.prime.router.cli.FileUtilities
 import java.net.HttpURLConnection
 import java.io.File
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import gov.cdc.prime.router.ReportId
 import gov.cdc.prime.router.azure.WorkflowEngine
 import com.google.common.base.CharMatcher
+import ca.uhn.hl7v2.model.Message
 
+import ca.uhn.hl7v2.DefaultHapiContext
+import ca.uhn.hl7v2.model.Segment
+import ca.uhn.hl7v2.model.v251.datatype.DR
+import ca.uhn.hl7v2.model.v251.datatype.DT
+import ca.uhn.hl7v2.model.v251.datatype.DTM
+import ca.uhn.hl7v2.model.v251.datatype.TS
+import ca.uhn.hl7v2.model.v251.datatype.XTN
+import ca.uhn.hl7v2.model.v251.message.ORU_R01
+import ca.uhn.hl7v2.parser.CanonicalModelClassFactory
+import ca.uhn.hl7v2.util.Terser
 
 /**
  * Generates a fake HL7 report and sends it to ReportStream, waits some time then checks the lineage to make
@@ -170,7 +177,7 @@ class Hl7Check : CoolTest() {
             db = WorkflowEngine().db
             var asciiOnly = false
 //            val receiverName = hl7Receiver.name
-            val receiverName = "fl-phd"
+            val receiverName = "HL7FL"
             val reportId = getReportIdFromResponse(json)
                 ?: return bad("***$name Test FAILED***: A report ID came back as null")
 
@@ -181,8 +188,26 @@ class Hl7Check : CoolTest() {
                 TermUi.echo(filename)
 //                TermUi.echo(File(filename).readText())
                 if (filename != null) {
+//                     contents == File(reFile).inputStream().readBytes().toString(Charsets.UTF_8)
+//                    val mcf = CanonicalModelClassFactory("2.5.1")
+//                    val context = DefaultHapiContext()
+//                    context.modelClassFactory = mcf
+//                    val parser = context.pipeParser
+//                    val reg = "[\r\n]".toRegex()
                     val contents = File(options.sftpDir, filename).inputStream().readBytes().toString(Charsets.UTF_8)
-                    asciiOnly = CharMatcher.ascii().matchesAllOf(contents)
+                    TermUi.echo(contents)
+                    TermUi.echo("---------------")
+                    TermUi.echo(reFile.inputStream().readBytes().toString(Charsets.UTF_8))
+                    val foo = CompareHl7Data().compareHl7(reFile.inputStream(), File(options.sftpDir, filename).inputStream())
+                    TermUi.echo(foo)
+                    for(item in foo.errors){
+                        TermUi.echo(item)
+                    }
+//                    val hapiMsg = parser.parse(cleanedMessage)
+//                    val terser = Terser(hapiMsg)
+//
+//                    TermUi.echo(terser.get("/.PID-7-1"))
+//                    asciiOnly = CharMatcher.ascii().matchesAllOf(contents)
                 }
             }
             if (asciiOnly) {
