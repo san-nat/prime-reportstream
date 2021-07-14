@@ -146,22 +146,22 @@ class Hl7Check : CoolTest() {
     override val description = "Submit badly formatted hl7 files - should get errors"
     override val status = TestStatus.SMOKE
     override fun run(environment: ReportStreamEnv, options: CoolTestOptions): Boolean {
-        val listBadCharacters = listOf(
-            ""
+        val listOfFiles = listOf(
+            "minimal-exp.hl7"
         )
         var passed = false
         val sender = hl7Sender
-        listBadCharacters.forEachIndexed { i, badCharacters ->
-            ugly("Starting badcsv file Test $i: submitting with $badCharacters")
-            val reFile = FileUtilities.replaceText(
-                "./src/test/hl7_test_files/invalid_characters_template.hl7",
-                "replaceMe",
-                "$badCharacters"
-            )
-
+        listOfFiles.forEachIndexed { i, filename ->
+            ugly("Starting badcsv file Test $i: submitting with $filename")
+            val reFile = File("./src/test/hl7_test_files/$filename")
             if (!reFile.exists()) {
-                error("Unable to find file ${reFile.absolutePath} to do badhl7 test")
+                error("Unable to find file ${reFile.absolutePath} to do badcsv test")
             }
+//            val reFile = FileUtilities.replaceText(
+//                "./src/test/hl7_test_files/invalid_characters_template.hl7",
+//                "replaceMe",
+//                "$file"
+//            )
 
             val (responseCode, json) = HttpUtilities.postReportFile(
                 environment,
