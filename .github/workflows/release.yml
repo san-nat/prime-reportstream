@@ -21,7 +21,7 @@ jobs:
       POSTGRES_PASSWORD: changeIT!
     steps:
       - name: "Check out changes"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set Environment Variables
         run: |
@@ -77,7 +77,7 @@ jobs:
 
     steps:
       - name: "Check out changes"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run Build Script
         run: bash ci_build.bash
@@ -107,7 +107,7 @@ jobs:
       PREFIX: rkh5012
     steps:
       - name: "Check out changes"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download Router Artifact
         uses: actions/download-artifact@v2
@@ -200,7 +200,7 @@ jobs:
       PREFIX: pdhstaging
     steps:
       - name: "Check out changes"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download Router Artifact
         uses: actions/download-artifact@v2
@@ -294,7 +294,7 @@ jobs:
       PREFIX: pdhprod
     steps:
       - name: "Check out changes"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download Router Artifact
         uses: actions/download-artifact@v2
