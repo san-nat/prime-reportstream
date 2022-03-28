@@ -121,7 +121,7 @@ jobs:
 
       - name: Add diff as PR comment
         if: ${{ steps.check_changes.outcome == 'failure' }}
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.number }}
