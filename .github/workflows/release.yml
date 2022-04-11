@@ -62,7 +62,7 @@ jobs:
           check_name: "Integration Test Results"
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: prime-router-build-${{ github.run_id }}
           path: prime-router/build
@@ -83,7 +83,7 @@ jobs:
         run: bash ci_build.bash
 
       - name: Save Static Website
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: static_website-${{ github.run_id }}
           path: frontend/dist
