@@ -17,7 +17,7 @@ jobs:
       has_router_change: ${{ steps.skip_check.outputs.router }}
     steps:
       - name: "Check out changes"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
       - uses: dorny/paths-filter@v2
         id: skip_check
         with:
@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: "Check out changes"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.1.0
 
       - name: Set Environment Variables
         run: |
